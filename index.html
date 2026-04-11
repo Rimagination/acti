@@ -343,6 +343,12 @@
     .td-strength-panel { grid-area:strength; }
     .td-weak-panel { grid-area:weak; }
     .td-analysis-panel { grid-area:analysis; overflow:hidden; }
+    .td-dashboard.no-score {
+      grid-template-areas:
+        "profile profile"
+        "strength weak"
+        "analysis analysis";
+    }
     .td-panel {
       min-height:0; border-radius:8px; background:rgba(255,255,255,.92);
       border:1px solid rgba(31,42,35,.07); box-shadow:var(--shadow);
@@ -489,6 +495,13 @@
           "weak"
           "analysis";
       }
+      .td-dashboard.no-score {
+        grid-template-areas:
+          "profile"
+          "strength"
+          "weak"
+          "analysis";
+      }
       .td-desc-text { max-height:none; overflow:visible; }
     }
     @media (max-width:768px) {
@@ -512,6 +525,7 @@
   <div class="nav-logo" onclick="go('home')">ACTI</div>
   <div class="nav-links">
     <a onclick="startTest()">开始测试</a>
+    <a id="nav-result" onclick="openSavedResult()" style="display:none">我的结果</a>
     <a onclick="go('types')">所有类型</a>
     <a href="https://scansci.com/" target="_blank" rel="noopener noreferrer">ScanSci</a>
   </div>
@@ -907,11 +921,48 @@ const OPTS=[
 ];
 
 const DL=[{a:'卷 J',b:'躺 L'},{a:'理 R',b:'感 F'},{a:'独 I',b:'群 S'},{a:'急 A',b:'缓 B'}];
+const RESULT_KEY='acti:lastResult';
 
 /* ═══════════════ STATE ═══════════════ */
 let S={page:'home',q:0,ans:Array(20).fill(null)};
 
 /* ═══════════════ NAV ═══════════════ */
+function readSavedResult(){
+  try{
+    const raw=localStorage.getItem(RESULT_KEY);
+    if(!raw) return null;
+    const saved=JSON.parse(raw);
+    if(!saved||!T[saved.code]||!Array.isArray(saved.scores)||saved.scores.length!==4) return null;
+    return saved;
+  }catch{
+    return null;
+  }
+}
+
+function saveResult(code,scores){
+  try{
+    localStorage.setItem(RESULT_KEY,JSON.stringify({
+      code,
+      scores,
+      answers:S.ans.slice(),
+      savedAt:Date.now()
+    }));
+  }catch{}
+  updateResultNav();
+}
+
+function updateResultNav(){
+  const link=document.getElementById('nav-result');
+  if(!link) return;
+  const saved=readSavedResult();
+  link.style.display=saved?'inline':'none';
+}
+
+function openSavedResult(){
+  const saved=readSavedResult();
+  if(saved) openDetail(saved.code);
+}
+
 function go(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -962,59 +1013,24 @@ function calcType(){
 /* ═══════════════ RESULT PAGE ═══════════════ */
 function showResult(){
   const{code,scores}=calcType();
-  go('result');
-  const tp=T[code],grp=G[tp.g],c=grp.color;
-  const bars=scores.map((avg,i)=>{
-    const pct=Math.round((avg-1)/4*100),isA=avg>3,lp=isA?pct:100-pct;
-    return`<div class="dim-row">
-      <div class="dim-top">
-        <span style="color:${c};font-weight:700">${isA?DL[i].a:DL[i].b} ${lp}%</span>
-        <span style="color:#bbb">${isA?DL[i].b:DL[i].a} ${100-lp}%</span>
-      </div>
-      <div class="dim-rail"><div class="dim-fill" style="width:0%;background:${c}" data-w="${lp}"></div></div>
-    </div>`;
-  }).join('');
-  document.getElementById('result-root').innerHTML=`
-    <div class="res-hero" style="background:linear-gradient(150deg,${grp.dark} 0%,${c}dd 100%)">
-      <div class="res-hero-inner">
-        <div class="res-grp">${grp.name}</div>
-        <div class="res-code">${code}</div>
-        <div class="res-name">${tp.e} ${tp.name}</div>
-        <div class="res-tag">${tp.tag}</div>
-        <div class="res-cta-row">
-          <button class="btn-p" style="background:#fff;color:${c}" onclick="openDetail('${code}')">查看完整详情 →</button>
-          <button class="btn-o" onclick="startTest()">再测一次</button>
-        </div>
-      </div>
-    </div>
-    <div class="res-body">
-      <div class="res-card"><div class="res-card-lbl">四维得分</div><div class="dims">${bars}</div></div>
-      <div class="res-card"><div class="res-card-lbl">梗点速览</div><div class="res-meme">${tp.meme}</div><div class="res-quote" style="border-color:${c}">${tp.q}</div></div>
-      <div class="res-card"><div class="res-card-lbl">完整解析</div><div class="res-desc">${tp.desc}</div></div>
-      <div class="res-acts">
-        <button class="btn-ghost" onclick="go('types')">探索所有类型</button>
-        <button class="btn-ghost" onclick="startTest()">再测一次</button>
-      </div>
-    </div>`;
-  requestAnimationFrame(()=>setTimeout(()=>{
-    document.querySelectorAll('.dim-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});
-  },100));
+  saveResult(code,scores);
+  openDetail(code);
 }
 
 /* ═══════════════ DETAIL PAGE ═══════════════ */
 function openDetail(code){
   const tp=T[code],grp=G[tp.g],c=grp.color;
   const descText=tp.desc.replace(new RegExp(`^${code}\\s*型个体`),'这类个体');
+  const saved=readSavedResult();
+  const resultScores=saved&&saved.code===code?saved.scores:null;
   const hero=document.getElementById('td-hero');
   hero.style.setProperty('--tone',c);
   hero.style.setProperty('--tone-dark',grp.dark);
   hero.style.setProperty('--tone-soft',`${c}18`);
 
   // Dimension scores
-  const dimsHTML=DL.map((dl,i)=>{
-    // derive scores from answers if coming from test, else show balanced
-    const hasAns=S.ans.every(a=>a!==null);
-    const avg=hasAns?S.ans.slice(i*5,(i+1)*5).reduce((a,b)=>a+b,0)/5:3.2;
+  const dimsHTML=resultScores?DL.map((dl,i)=>{
+    const avg=resultScores[i];
     const pct=Math.round((avg-1)/4*100),isA=avg>3,lp=isA?pct:100-pct;
     return`<div class="td-dim">
       <div class="td-dim-head">
@@ -1024,7 +1040,13 @@ function openDetail(code){
       <div class="td-dim-rail"><div class="td-dim-fill" style="width:0%;background:${c}" data-w="${lp}"></div></div>
       <div class="td-dim-pct"><span>${isA?dl.a:dl.b}</span><span>${isA?dl.b:dl.a}</span></div>
     </div>`;
-  }).join('');
+  }).join(''):'';
+
+  const scorePanelHTML=resultScores?`
+        <section class="td-panel td-score-panel" id="td-s-dims">
+          <div class="td-panel-ttl">四维得分</div>
+          <div class="td-dims">${dimsHTML}</div>
+        </section>`:'';
 
   const dimKeys=['J/L','R/F','I/S','A/B'];
   const dimVals=code.split('');
@@ -1078,11 +1100,8 @@ function openDetail(code){
         </div>
       </aside>
 
-      <main class="td-dashboard">
-        <section class="td-panel td-score-panel" id="td-s-dims">
-          <div class="td-panel-ttl">四维得分</div>
-          <div class="td-dims">${dimsHTML}</div>
-        </section>
+      <main class="td-dashboard${resultScores?'':' no-score'}">
+        ${scorePanelHTML}
         <section class="td-panel td-profile-panel" id="td-s-meme">
           <div class="td-panel-ttl">人物速览</div>
           <div class="td-meme-text">${tp.meme}</div>
@@ -1143,6 +1162,7 @@ function typesFilter(g,btn){
 const initialParams=new URLSearchParams(window.location.search);
 const initialType=initialParams.get('type');
 const initialPage=initialParams.get('page');
+updateResultNav();
 if(initialType&&T[initialType]) openDetail(initialType);
 else if(initialPage==='types') go('types');
 else if(initialPage==='test') startTest();
