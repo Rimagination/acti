@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACTI — 学术人格类型测试</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f7f8f5; --surface: #fff; --text: #181612; --muted: #68716a;
+      --hero-bg: #eef5ee; --accent: #d99a2b; --line: #dfe5dc;
+      --jr: #6d3fa8; --jf: #d45614; --lr: #157a55; --lf: #1a6fa8;
+      --jr-dark: #3a1f68; --jf-dark: #8a320a; --lr-dark: #094d32; --lf-dark: #0d3f68;
+      --r: 8px; --rs: 8px;
+      --shadow: 0 2px 20px rgba(31,42,35,.055); --shadow-lg: 0 16px 48px rgba(31,42,35,.14);
+      --serif: 'Noto Serif SC',Georgia,serif; --sans: 'Noto Sans SC',system-ui,sans-serif;
+      --ease: .25s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 6%; height:64px;
+      background:rgba(245,243,239,.96); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(0,0,0,.07);
+    }
+    .nav-logo { font-family:var(--serif); font-size:1.5rem; font-weight:900; color:var(--text); cursor:pointer; letter-spacing:6px; }
+    .nav-links { display:flex; gap:2rem; }
+    .nav-links a { color:var(--muted); text-decoration:none; font-size:.85rem; letter-spacing:.5px; cursor:pointer; transition:color var(--ease); }
+    .nav-links a:hover { color:var(--text); }
+
+    /* ── PAGES ── */
+    .page { display:none; }
+    .page.active { display:block; }
+
+    /* ════ BUTTONS ════ */
+    .btn-p {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:15px 40px; border:none; border-radius:8px;
+      background:var(--text); color:#fff;
+      font-size:.95rem; font-weight:700; cursor:pointer;
+      font-family:var(--sans); transition:transform .2s,box-shadow .2s,background .2s;
+    }
+    .btn-p:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,.18); background:#0d0c09; }
+    .btn-o {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:13px 28px; border-radius:8px;
+      border:2px solid rgba(255,255,255,.3); background:transparent;
+      color:rgba(255,255,255,.85); font-size:.88rem; font-weight:500;
+      cursor:pointer; font-family:var(--sans); transition:all var(--ease);
+    }
+    .btn-o:hover { border-color:rgba(255,255,255,.7); color:#fff; }
+    .btn-ghost {
+      padding:12px 26px; border-radius:8px; border:2px solid #ddd;
+      background:transparent; color:var(--muted); font-size:.88rem;
+      cursor:pointer; font-family:var(--sans); transition:all var(--ease);
+    }
+    .btn-ghost:hover { border-color:#999; color:var(--text); }
+
+    /* ════════════ HOME ════════════ */
+    .hero {
+      min-height:100svh;
+      background:
+        linear-gradient(180deg, #f7f8f5 0%, #eef5ee 100%);
+      display:flex; align-items:center;
+      padding:96px 6% 64px; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
+      background:
+        linear-gradient(90deg, rgba(247,248,245,.98) 0%, rgba(247,248,245,.9) 34%, rgba(247,248,245,.38) 58%, rgba(247,248,245,.06) 100%),
+        radial-gradient(ellipse 50% 65% at 18% 72%, rgba(217,154,43,.12) 0%, transparent 68%);
+    }
+    .hero::after {
+      content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+      background-image: linear-gradient(rgba(31,42,35,.035) 1px, transparent 1px);
+      background-size: 100% 36px;
+    }
+    .hero-inner { position:relative; z-index:2; max-width:540px; }
+    .hero-badge {
+      display:inline-block; padding:5px 16px;
+      border:1px solid rgba(0,0,0,.1); border-radius:8px;
+      color:var(--muted); font-size:.68rem;
+      letter-spacing:3px; text-transform:uppercase; margin-bottom:1.8rem;
+      background:rgba(0,0,0,.03);
+    }
+    .hero h1 {
+      font-family:var(--serif); font-size:6rem;
+      font-weight:900; color:var(--text); letter-spacing:10px; line-height:1; margin-bottom:1.2rem;
+    }
+    .hero-line { color:var(--text); opacity:.8; font-size:clamp(1rem,2vw,1.25rem); font-weight:300; margin-bottom:.5rem; letter-spacing:.3px; }
+    .hero-sub { color:var(--muted); font-size:.85rem; margin-bottom:2.4rem; letter-spacing:.3px; }
+    .hero-actions { display:flex; justify-content:center; width:100%; }
+    .hero-actions .btn-p { min-width:220px; justify-content:center; }
+    .hero-stats { display:flex; gap:2.5rem; margin-top:3rem; padding-top:2rem; border-top:1px solid rgba(0,0,0,.08); }
+    .stat-n { font-family:var(--serif); font-size:1.9rem; font-weight:700; color:var(--accent); }
+    .stat-l { font-size:.68rem; color:var(--muted); margin-top:4px; letter-spacing:.3px; }
+
+    .hero-visual {
+      position:absolute; z-index:0; right:-18vw; bottom:-7vw;
+      width:min(92vw,1540px); pointer-events:none;
+      animation:heroDrift 12s ease-in-out infinite alternate;
+    }
+    .hero-visual img {
+      display:block; width:100%; height:auto;
+      filter:saturate(1.04) contrast(1.02);
+    }
+    @keyframes heroDrift {
+      from { transform:translate3d(0,0,0) scale(1); }
+      to { transform:translate3d(-18px,-10px,0) scale(1.01); }
+    }
+    @media(max-width:900px){
+      .hero { min-height:720px; padding-top:96px; }
+      .hero h1 { font-size:4.5rem; }
+      .hero::before { background:linear-gradient(180deg, rgba(247,248,245,.98) 0%, rgba(247,248,245,.86) 56%, rgba(247,248,245,.38) 100%); }
+      .hero-visual { width:1160px; right:-600px; bottom:-40px; opacity:.72; }
+    }
+
+    /* Home types section */
+    .types-sec { padding:88px 6%; background:var(--surface); }
+    .sec-head { text-align:center; margin-bottom:3rem; }
+    .sec-lbl { font-size:.68rem; text-transform:uppercase; letter-spacing:3.5px; color:var(--muted); margin-bottom:.65rem; }
+    .sec-ttl { font-family:var(--serif); font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; margin-bottom:.65rem; }
+    .sec-dsc { color:var(--muted); font-size:.88rem; max-width:480px; margin:0 auto; line-height:1.75; }
+
+    .gtabs { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; margin-bottom:2.4rem; }
+    .gtab {
+      padding:7px 18px; border-radius:8px; border:1.5px solid #ddd;
+      font-size:.78rem; font-weight:500; cursor:pointer;
+      background:#fff; color:var(--muted); transition:all .2s; font-family:var(--sans);
+      letter-spacing:.2px;
+    }
+    .gtab:hover { border-color:#aaa; color:var(--text); background:#f8f8f8; }
+    .gtab.on[data-g=all] { background:var(--text); border-color:var(--text); color:#fff; }
+    .gtab.on[data-g=JR]  { background:var(--jr);   border-color:var(--jr);   color:#fff; }
+    .gtab.on[data-g=JF]  { background:var(--jf);   border-color:var(--jf);   color:#fff; }
+    .gtab.on[data-g=LR]  { background:var(--lr);   border-color:var(--lr);   color:#fff; }
+    .gtab.on[data-g=LF]  { background:var(--lf);   border-color:var(--lf);   color:#fff; }
+
+    .tgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.1rem; max-width:1040px; margin:0 auto; }
+    .tcard {
+      border-radius:var(--r); padding:1.1rem 1rem 1.25rem;
+      cursor:pointer; text-align:center;
+      transition:transform .22s,box-shadow .25s,background .2s;
+      border:1px solid transparent; border-top-width:3px;
+      position:relative; overflow:hidden; background:#fff;
+    }
+    .tcard::after {
+      content:''; position:absolute; inset:0; opacity:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
+      transition:opacity .22s; pointer-events:none;
+    }
+    .tcard:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+    .tcard:hover::after { opacity:1; }
+    .tcard[data-g=JR] { background:rgba(92,63,158,.07);  border-color:rgba(92,63,158,.15); border-top-color:var(--jr); }
+    .tcard[data-g=JF] { background:rgba(212,86,20,.07);  border-color:rgba(212,86,20,.15); border-top-color:var(--jf); }
+    .tcard[data-g=LR] { background:rgba(21,122,85,.07);  border-color:rgba(21,122,85,.15); border-top-color:var(--lr); }
+    .tcard[data-g=LF] { background:rgba(34,80,179,.07);  border-color:rgba(34,80,179,.15); border-top-color:var(--lf); }
+    .tcard-img {
+      width:92px; aspect-ratio:1/1; margin:0 auto .75rem;
+      border-radius:8px; overflow:hidden; background:#fff;
+      border:1px solid rgba(31,42,35,.08);
+      box-shadow:0 10px 24px rgba(31,42,35,.08);
+    }
+    .tcard-img img { width:100%; height:100%; object-fit:cover; display:block; mix-blend-mode:multiply; }
+    .tcard-code { font-size:.67rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:.35rem; }
+    .tcard[data-g=JR] .tcard-code { color:var(--jr); }
+    .tcard[data-g=JF] .tcard-code { color:var(--jf); }
+    .tcard[data-g=LR] .tcard-code { color:var(--lr); }
+    .tcard[data-g=LF] .tcard-code { color:var(--lf); }
+    .tcard-emo  { display:none; }
+    .tcard-name { font-weight:700; font-size:.88rem; }
+    .tcard-sub  { font-size:.68rem; color:var(--muted); margin-top:4px; }
+
+    /* ════════════ TEST ════════════ */
+    .test-wrap { min-height:100vh; padding-top:64px; background:var(--bg); }
+    .prog-rail { height:4px; background:#e8e8e8; position:sticky; top:64px; z-index:10; }
+    .prog-fill { height:100%; background:linear-gradient(90deg,var(--jr),var(--lf)); transition:width .45s cubic-bezier(.4,0,.2,1); }
+    .test-box { max-width:680px; margin:0 auto; padding:56px 5% 64px; }
+    .test-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:2.2rem; }
+    .test-ctr { font-size:.78rem; color:var(--muted); font-weight:500; letter-spacing:.3px; }
+    .test-dim { font-size:.7rem; padding:5px 15px; border-radius:8px; background:#fff; color:var(--muted); border:1.5px solid #e4e4e4; letter-spacing:.3px; }
+    .test-q { font-family:var(--serif); font-size:clamp(1.25rem,2.8vw,1.7rem); font-weight:600; line-height:1.6; text-align:center; margin-bottom:2.8rem; }
+    .scale { display:flex; flex-direction:column; gap:.65rem; margin-bottom:2.8rem; }
+    .sopt {
+      display:flex; align-items:center; gap:1rem; padding:.9rem 1.5rem;
+      border-radius:var(--rs); border:1.5px solid #e4e4e4;
+      cursor:pointer; transition:all .18s; background:#fff; user-select:none;
+    }
+    .sopt:hover { border-color:#b8b8b8; background:#fafafa; transform:translateX(3px); }
+    .sopt.on { border-color:var(--jr); background:rgba(92,63,158,.05); transform:translateX(3px); }
+    .sdot { width:20px; height:20px; border-radius:50%; border:2px solid #d0d0d0; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .18s; }
+    .sopt.on .sdot { border-color:var(--jr); background:var(--jr); }
+    .sopt.on .sdot::after { content:''; width:6px; height:6px; border-radius:50%; background:#fff; }
+    .slabel { font-size:.9rem; }
+    .test-nav { display:flex; justify-content:space-between; align-items:center; }
+    .btn-back { padding:11px 24px; border-radius:8px; border:1.5px solid #ddd; background:transparent; color:var(--muted); font-size:.86rem; cursor:pointer; font-family:var(--sans); transition:all .18s; }
+    .btn-back:hover { border-color:#999; color:var(--text); }
+    .btn-next { padding:13px 36px; border-radius:8px; border:none; background:var(--text); color:#fff; font-size:.9rem; font-weight:600; cursor:pointer; font-family:var(--sans); transition:all .2s; }
+    .btn-next:hover:not(:disabled) { background:#0f0c1e; transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,.15); }
+    .btn-next:disabled { opacity:.32; cursor:not-allowed; }
+
+    /* ════════════ RESULT ════════════ */
+    .res-hero {
+      padding:108px 6% 72px; text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .res-hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .res-hero-inner { position:relative; z-index:1; }
+    .res-grp { font-size:.68rem; text-transform:uppercase; letter-spacing:3px; font-weight:700; color:rgba(255,255,255,.55); margin-bottom:.9rem; }
+    .res-code {
+      font-family:var(--serif); font-size:clamp(3.5rem,10vw,7rem);
+      font-weight:900; color:#fff; letter-spacing:12px; line-height:1;
+      margin-bottom:.6rem; opacity:0; animation:up .7s ease forwards .15s;
+    }
+    .res-name { font-size:clamp(1.4rem,3vw,1.9rem); font-weight:600; color:rgba(255,255,255,.92); margin-bottom:.6rem; opacity:0; animation:up .6s ease forwards .38s; }
+    .res-tag  { font-size:.92rem; color:rgba(255,255,255,.55); max-width:500px; margin:0 auto 2.8rem; line-height:1.7; opacity:0; animation:up .6s ease forwards .55s; }
+    @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    .res-cta-row { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; opacity:0; animation:up .5s ease forwards .7s; }
+    .res-body { max-width:780px; margin:0 auto; padding:48px 5% 80px; }
+    .res-card { background:#fff; border-radius:var(--r); padding:1.75rem 2rem; margin-bottom:1.2rem; box-shadow:var(--shadow); border:1px solid rgba(0,0,0,.04); }
+    .res-card-lbl { font-size:.67rem; text-transform:uppercase; letter-spacing:2.5px; color:var(--muted); margin-bottom:.9rem; font-weight:700; padding-bottom:.75rem; border-bottom:1px solid #f0f0f0; }
+    .res-meme  { font-size:.92rem; line-height:1.9; color:var(--text); }
+    .res-desc  { font-size:.9rem; line-height:1.95; color:var(--text); }
+    .res-quote { font-style:italic; padding:.9rem 1.2rem; margin-top:1rem; border-left:3px solid; border-radius:0 var(--rs) var(--rs) 0; background:var(--bg); font-size:.87rem; color:var(--muted); }
+    .dims { display:flex; flex-direction:column; gap:1.2rem; }
+    .dim-row { display:flex; flex-direction:column; gap:.45rem; }
+    .dim-top { display:flex; justify-content:space-between; font-size:.82rem; font-weight:600; }
+    .dim-rail { height:8px; background:#ebebeb; border-radius:100px; overflow:hidden; }
+    .dim-fill { height:100%; border-radius:100px; transition:width 1.2s cubic-bezier(.4,0,.2,1) .3s; }
+    .res-acts { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem; }
+
+    /* ════════════ TYPE DETAIL PAGE ════════════ */
+    #page-detail { padding-top:64px; min-height:100svh; background:var(--bg); }
+    .td-hero {
+      --tone:#157a55; --tone-dark:#052e1c; --tone-soft:rgba(21,122,85,.12);
+      min-height:calc(100svh - 64px);
+      padding:24px 2.5vw; position:relative; overflow:hidden;
+      background:
+        radial-gradient(circle at 8% 18%, var(--tone-soft) 0%, transparent 31%),
+        radial-gradient(circle at 88% 14%, rgba(217,154,43,.12) 0%, transparent 27%),
+        linear-gradient(135deg, #fbfbf7 0%, #eef5ee 100%);
+    }
+    .td-hero::after {
+      content:''; position:absolute; inset:0; pointer-events:none; opacity:.55;
+      background-image: radial-gradient(rgba(31,42,35,.07) 1px, transparent 1px);
+      background-size:28px 28px;
+    }
+    .td-shell {
+      position:relative; z-index:1; width:100%; max-width:none; margin:0 auto;
+      min-height:calc(100svh - 112px); height:auto;
+      display:grid; grid-template-columns:348px minmax(0,1fr); gap:14px;
+      align-items:start;
+    }
+    .td-person-card {
+      display:flex; flex-direction:column; min-height:0; overflow:hidden;
+      border:1px solid transparent; border-radius:8px;
+      background:
+        linear-gradient(#fff,#fff) padding-box,
+        linear-gradient(135deg, var(--tone), rgba(255,255,255,.8), var(--tone-dark)) border-box;
+      box-shadow:0 22px 70px rgba(31,42,35,.16);
+    }
+    .td-portrait-frame {
+      width:min(280px, calc(100% - 28px)); aspect-ratio:1/1; margin:12px auto 0;
+      border-radius:8px; overflow:hidden;
+      background:linear-gradient(145deg, #fff 0%, var(--tone-soft) 100%);
+      border:1px solid rgba(31,42,35,.08);
+    }
+    .td-portrait-frame img { width:100%; height:100%; display:block; object-fit:cover; mix-blend-mode:multiply; }
+    .td-card-body { padding:14px 18px 16px; display:flex; flex-direction:column; gap:8px; min-height:0; text-align:center; }
+    .td-grp-badge {
+      display:inline-flex; align-items:center; gap:8px; align-self:center;
+      padding:5px 10px; border-radius:8px; background:var(--tone-soft);
+      color:var(--tone-dark); font-size:.68rem; font-weight:700; letter-spacing:1.5px;
+    }
+    .td-grp-dot { width:7px; height:7px; border-radius:50%; background:var(--tone); }
+    .td-code { font-family:var(--serif); font-size:3.7rem; font-weight:900; color:var(--text); letter-spacing:8px; line-height:.95; }
+    .td-name { font-size:1.22rem; font-weight:800; color:var(--text); }
+    .td-tag { font-size:.82rem; line-height:1.58; color:var(--muted); }
+    .td-axis-chips { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+    .td-axis-chip {
+      border-radius:8px; padding:7px 5px; text-align:center; background:#f7f8f5;
+      border:1px solid var(--line); font-size:.72rem; color:var(--muted);
+    }
+    .td-axis-chip b { display:block; color:var(--tone); font-size:1rem; line-height:1.1; }
+    .td-related { margin-top:auto; border-top:1px solid var(--line); padding-top:10px; }
+    .td-related-title { font-size:.68rem; color:var(--muted); font-weight:700; letter-spacing:1.5px; margin-bottom:7px; text-align:left; }
+    .td-related-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+    .td-related-type {
+      border:1px solid var(--line); border-radius:8px; background:#fbfbf8;
+      cursor:pointer; overflow:hidden; transition:transform .2s ease, border-color .2s ease;
+    }
+    .td-related-type:hover { transform:translateY(-2px); border-color:var(--tone); }
+    .td-related-type img {
+      width:100%; aspect-ratio:1/1; object-fit:contain; display:block;
+      background:#fff; mix-blend-mode:multiply;
+    }
+    .td-related-type span { display:block; padding:4px 5px 6px; font-size:.62rem; text-align:center; font-weight:700; color:var(--tone-dark); }
+    .td-card-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .td-card-btn {
+      border:1px solid var(--tone); border-radius:8px; padding:10px 12px;
+      font-family:var(--sans); font-size:.82rem; font-weight:700; cursor:pointer;
+      background:var(--tone); color:#fff; transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .td-card-btn.secondary { background:#fff; color:var(--tone-dark); border-color:var(--line); }
+    .td-card-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(31,42,35,.12); }
+
+    .td-dashboard {
+      min-height:0; display:grid; gap:10px;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      grid-template-areas:
+        "score profile"
+        "strength weak"
+        "analysis analysis";
+      align-content:start;
+    }
+    .td-score-panel { grid-area:score; }
+    .td-profile-panel { grid-area:profile; }
+    .td-strength-panel { grid-area:strength; }
+    .td-weak-panel { grid-area:weak; }
+    .td-analysis-panel { grid-area:analysis; overflow:hidden; }
+    .td-panel {
+      min-height:0; border-radius:8px; background:rgba(255,255,255,.92);
+      border:1px solid rgba(31,42,35,.07); box-shadow:var(--shadow);
+      padding:14px 16px; overflow:visible; align-self:start;
+    }
+    .td-panel.td-analysis-panel { overflow:hidden; }
+    .td-panel-ttl {
+      display:flex; align-items:center; justify-content:space-between;
+      font-size:.72rem; text-transform:uppercase; letter-spacing:2px;
+      color:var(--muted); font-weight:800; margin-bottom:9px;
+    }
+    .td-panel-ttl::after { content:''; height:1px; flex:1; margin-left:12px; background:var(--line); }
+
+    .td-dims { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.68rem .9rem; }
+    .td-dim { display:flex; flex-direction:column; gap:.32rem; }
+    .td-dim-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+    .td-dim-a { font-size:.78rem; font-weight:800; white-space:nowrap; }
+    .td-dim-b { font-size:.72rem; color:var(--muted); white-space:nowrap; }
+    .td-dim-rail { height:7px; background:#e8ece6; border-radius:8px; overflow:hidden; }
+    .td-dim-fill { height:100%; border-radius:8px; transition:width 1.1s ease .2s; }
+    .td-dim-pct { display:flex; justify-content:space-between; font-size:.64rem; color:#a6aaa4; }
+
+    .td-meme-text { font-size:.82rem; line-height:1.62; color:var(--text); }
+    .td-quote {
+      margin-top:.55rem; padding:.6rem .78rem; border-left:3px solid;
+      border-radius:0 8px 8px 0; background:#f7f8f5; font-style:italic;
+      font-size:.78rem; color:var(--muted); line-height:1.55;
+    }
+    .td-items { display:grid; gap:.48rem; }
+    .td-item { display:grid; grid-template-columns:10px minmax(0,1fr); gap:.7rem; align-items:stretch; }
+    .td-item-icon {
+      width:6px; min-height:32px; border-radius:8px; flex-shrink:0;
+    }
+    .td-item-ttl { font-weight:800; font-size:.82rem; margin-bottom:.08rem; }
+    .td-item-dsc { font-size:.74rem; color:var(--muted); line-height:1.44; }
+    .td-desc-text {
+      font-size:.82rem; line-height:1.68; color:var(--text);
+      max-height:clamp(160px, 23svh, 220px); overflow:auto; padding-right:8px;
+    }
+    .td-desc-text::-webkit-scrollbar { width:6px; }
+    .td-desc-text::-webkit-scrollbar-thumb { background:var(--line); border-radius:8px; }
+    .td-subnav, .td-main { display:none; }
+
+    /* ════════════ ALL TYPES ════════════ */
+    #page-types { padding-top:64px; }
+
+    /* ── FOOTER ── */
+    footer { background:#0d0c09; color:rgba(255,255,255,.28); text-align:center; padding:2.5rem 2rem; font-size:.75rem; letter-spacing:.3px; }
+    footer b { color:rgba(255,255,255,.55); }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width:1101px) and (max-height:820px) {
+      .td-hero { padding:14px 2.5vw 20px; overflow:auto; }
+      .td-shell {
+        min-height:0;
+        grid-template-columns:320px minmax(0,1fr);
+        gap:14px;
+      }
+      .td-portrait-frame { width:min(218px, calc(100% - 28px)); margin-top:10px; }
+      .td-card-body { gap:7px; padding:12px 18px 14px; }
+      .td-grp-badge { padding:4px 9px; font-size:.64rem; }
+      .td-code { font-size:3rem; letter-spacing:6px; }
+      .td-name { font-size:1.04rem; }
+      .td-tag { font-size:.76rem; line-height:1.36; }
+      .td-axis-chips { gap:6px; }
+      .td-axis-chip { padding:5px 4px; font-size:.64rem; }
+      .td-axis-chip b { font-size:.88rem; }
+      .td-related { padding-top:8px; }
+      .td-related-title { margin-bottom:5px; font-size:.64rem; }
+      .td-related-grid { gap:6px; }
+      .td-related-type img { height:auto; aspect-ratio:1/1; object-fit:contain; }
+      .td-related-type span { padding:3px 4px 5px; font-size:.58rem; }
+      .td-card-btn { padding:8px 10px; font-size:.76rem; }
+      .td-dashboard { gap:10px; }
+      .td-panel { padding:11px 14px; }
+      .td-panel-ttl { margin-bottom:7px; font-size:.64rem; letter-spacing:1.7px; }
+      .td-dims { gap:.42rem; }
+      .td-dim { gap:.22rem; }
+      .td-dim-a { font-size:.72rem; }
+      .td-dim-b { font-size:.66rem; }
+      .td-dim-pct { font-size:.58rem; }
+      .td-meme-text { font-size:.78rem; line-height:1.5; }
+      .td-quote { margin-top:.45rem; padding:.55rem .7rem; font-size:.72rem; line-height:1.35; }
+      .td-items { gap:.38rem; }
+      .td-item { grid-template-columns:8px minmax(0,1fr); gap:.55rem; }
+      .td-item-icon { width:5px; min-height:26px; }
+      .td-item-ttl { font-size:.76rem; }
+      .td-item-dsc { font-size:.68rem; line-height:1.35; }
+      .td-desc-text { max-height:none; overflow:visible; font-size:.76rem; line-height:1.48; }
+    }
+    @media (min-width:1101px) and (max-height:740px) {
+      .td-hero { padding:10px 2.5vw 14px; }
+      .td-shell { grid-template-columns:300px minmax(0,1fr); gap:12px; }
+      .td-portrait-frame { width:180px; margin-top:9px; }
+      .td-card-body { gap:6px; padding:10px 16px 12px; }
+      .td-grp-badge { padding:3px 8px; font-size:.6rem; }
+      .td-code { font-size:2.72rem; letter-spacing:5px; }
+      .td-name { font-size:.98rem; }
+      .td-tag { font-size:.72rem; line-height:1.3; }
+      .td-axis-chip { padding:4px 3px; font-size:.6rem; }
+      .td-axis-chip b { font-size:.8rem; }
+      .td-related { padding-top:6px; }
+      .td-related-title { margin-bottom:4px; font-size:.6rem; }
+      .td-related-type img { height:auto; aspect-ratio:1/1; object-fit:contain; }
+      .td-related-type span { padding:2px 3px 4px; font-size:.54rem; }
+      .td-card-btn { padding:7px 8px; font-size:.72rem; }
+      .td-dashboard { gap:8px; }
+      .td-panel { padding:9px 12px; }
+      .td-panel-ttl { margin-bottom:5px; font-size:.6rem; letter-spacing:1.4px; }
+      .td-dims { gap:.28rem; }
+      .td-dim { gap:.16rem; }
+      .td-dim-a { font-size:.66rem; }
+      .td-dim-b { font-size:.6rem; }
+      .td-dim-rail { height:5px; }
+      .td-dim-pct { font-size:.52rem; }
+      .td-meme-text { font-size:.72rem; line-height:1.36; }
+      .td-quote { margin-top:.35rem; padding:.45rem .6rem; font-size:.66rem; line-height:1.25; }
+      .td-items { gap:.25rem; }
+      .td-item { grid-template-columns:7px minmax(0,1fr); gap:.45rem; }
+      .td-item-icon { width:4px; min-height:22px; }
+      .td-item-ttl { font-size:.7rem; }
+      .td-item-dsc { font-size:.62rem; line-height:1.25; }
+      .td-desc-text { font-size:.68rem; line-height:1.35; }
+    }
+    @media (max-width:1100px) {
+      .td-shell { height:auto; min-height:0; grid-template-columns:1fr; }
+      .td-person-card { display:grid; grid-template-columns:250px minmax(0,1fr); }
+      .td-portrait-frame { margin:14px; }
+      .td-card-body { padding:18px 20px 18px 0; }
+    }
+    @media (max-width:900px) {
+      .td-hero { min-height:auto; padding:18px 4vw 32px; }
+      .td-dashboard {
+        grid-template-columns:1fr;
+        grid-template-areas:
+          "score"
+          "profile"
+          "strength"
+          "weak"
+          "analysis";
+      }
+      .td-desc-text { max-height:none; overflow:visible; }
+    }
+    @media (max-width:768px) {
+      .tgrid { grid-template-columns:repeat(2,1fr); }
+      .hero h1 { font-size:3.6rem; letter-spacing:6px; }
+      .hero-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:1.4rem; }
+      .td-person-card { display:flex; }
+      .td-card-body { padding:18px 20px 20px; }
+      .td-code { font-size:3.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo" onclick="go('home')">ACTI</div>
+  <div class="nav-links">
+    <a onclick="startTest()">开始测试</a>
+    <a onclick="go('types')">所有类型</a>
+  </div>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Academic Character Type Indicator</div>
+      <h1>ACTI</h1>
+      <p class="hero-line">你不一定是你以为的那种学者</p>
+      <p class="hero-sub">20 道题 · 4 个维度 · 16 种学术人格</p>
+      <div class="hero-actions">
+        <button class="btn-p" onclick="startTest()">开始测试 →</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-n">4</div><div class="stat-l">大维度</div></div>
+        <div><div class="stat-n">16</div><div class="stat-l">种人格</div></div>
+        <div><div class="stat-n">20</div><div class="stat-l">道题目</div></div>
+        <div><div class="stat-n">5<small>min</small></div><div class="stat-l">完成时间</div></div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <img src="assets/hero-main.png" alt="">
+    </div>
+  </section>
+</div>
+
+<!-- ══════════ TEST ══════════ -->
+<div id="page-test" class="page">
+  <div class="test-wrap">
+    <div class="prog-rail"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <div class="test-box">
+      <div class="test-meta">
+        <span class="test-ctr" id="t-ctr">第 1 题 / 共 20 题</span>
+        <span class="test-dim" id="t-dim">维度一·努力度</span>
+      </div>
+      <h2 class="test-q" id="t-q"></h2>
+      <div class="scale" id="t-scale"></div>
+      <div class="test-nav">
+        <button class="btn-back" id="btn-back" onclick="prevQ()">← 上一题</button>
+        <button class="btn-next" id="btn-next" onclick="nextQ()" disabled>下一题 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RESULT ══════════ -->
+<div id="page-result" class="page">
+  <div id="result-root"></div>
+</div>
+
+<!-- ══════════ TYPE DETAIL ══════════ -->
+<div id="page-detail" class="page">
+  <div id="td-hero" class="td-hero"></div>
+</div>
+
+<!-- ══════════ ALL TYPES ══════════ -->
+<div id="page-types" class="page">
+  <section class="types-sec" style="padding-top:80px">
+    <div class="sec-head">
+      <div class="sec-lbl">人格图鉴</div>
+      <h2 class="sec-ttl">所有 16 种学术人格</h2>
+      <p class="sec-dsc">点击任意类型，查看完整详情页</p>
+    </div>
+    <div class="gtabs" id="types-tabs">
+      <button class="gtab on" data-g="all" onclick="typesFilter('all',this)">全部</button>
+      <button class="gtab" data-g="JR" onclick="typesFilter('JR',this)">卷学派·理性系</button>
+      <button class="gtab" data-g="JF" onclick="typesFilter('JF',this)">卷学派·感性系</button>
+      <button class="gtab" data-g="LR" onclick="typesFilter('LR',this)">躺学派·理性系</button>
+      <button class="gtab" data-g="LF" onclick="typesFilter('LF',this)">躺学派·感性系</button>
+    </div>
+    <div class="tgrid" id="types-grid"></div>
+  </section>
+  <footer><p>ACTI — Academic Character Type Indicator</p><p style="margin-top:8px">本测试仅供娱乐，请勿用于任何严肃决策。</p></footer>
+</div>
+
+<script>
+/* ═══════════════ DATA ═══════════════ */
+const G = {
+  JR:{ name:'卷学派·理性系', color:'#6d3fa8', dark:'#28124a' },
+  JF:{ name:'卷学派·感性系', color:'#d45614', dark:'#6a2008' },
+  LR:{ name:'躺学派·理性系', color:'#157a55', dark:'#052e1c' },
+  LF:{ name:'躺学派·感性系', color:'#1a6fa8', dark:'#082640' },
+};
+
+const T = {
+  JRIA:{ g:'JR', e:'👑', name:'卷王本王',
+    tag:'以钢铁意志统治学术时区的秩序守护者',
+    meme:'实验室永动机。第一个到、最后一个走，连扫地阿姨都认识他。桌上常备泡面与维生素，将"效率"与"自律"纹在精神图腾上，并对一切"早点休息"的建议报以礼貌而坚定的无视。',
+    desc:'JRIA 型个体以高度系统化的执行力与近乎偏执的目标导向性为核心人格特征，倾向于将所有学术任务拆解为可量化的子目标，并在完成后获得强烈的内在奖赏。其时间感知系统与普通人存在显著偏差——他们并非不知道"休息有益效率"，而是在潜意识层面将休息本身视为一种效率损耗。JRIA 型人的最大盲区，在于难以理解为何他人无法与自己保持相同节奏，这一认知偏差在组会讨论中尤为突出。',
+    q:'"这个 deadline 我提前两周交了，你们进展怎么样了？"',
+    strengths:[
+      { i:'⚡', t:'铁血执行力', d:'设定目标后能够持续高强度推进，鲜少被外部干扰打断。' },
+      { i:'📐', t:'系统化拆解', d:'天然倾向于将复杂任务分解为可量化、可追踪的子目标。' },
+      { i:'🔒', t:'极强自律性', d:'无需外部监督即可维持稳定的高质量工作节奏。' },
+    ],
+    weaknesses:[
+      { i:'👥', t:'同理心盲区', d:'难以理解为何他人无法与自己保持相同的工作节奏。' },
+      { i:'😴', t:'休息抵触症', d:'在潜意识层面将休息视为效率损耗，长期处于消耗状态。' },
+      { i:'📊', t:'标准外溢', d:'容易对他人隐性施加与自身相同的高标准，造成关系压力。' },
+    ]
+  },
+  JRIB:{ g:'JR', e:'🕯️', name:'学术隐士',
+    tag:'在信息噪声中寻求深度的孤独修行者',
+    meme:'每天开馆进、闭馆出，座位固定、插线板专属。没人知道他在研究什么，包括他的导师。偶尔在组会上发言，内容精准到令人怀疑他一直在默默听。',
+    desc:'JRIB 型个体将深度专注视为最高学术美德，并为此主动切断绝大多数外部信息干扰。他们与图书馆之间存在一种超越物理空间的精神依附关系——提供的不仅是安静，更是"此刻我在做正确之事"的存在性确认。其行为模式的核心张力在于：实际学术产出往往远超其外部可见度，形成一种典型的"低曝光、高密度"人格特征。',
+    q:'"啊？今天有组会？"',
+    strengths:[
+      { i:'🎯', t:'深度专注力', d:'能在缺乏外部激励的情况下维持长时间的高质量深度工作。' },
+      { i:'🧩', t:'独立思考', d:'不受学术潮流和他人观点干扰，形成真正的个人研究视角。' },
+      { i:'📚', t:'输出扎实', d:'产出经过深度内化，质量稳定且具有较强的自洽性。' },
+    ],
+    weaknesses:[
+      { i:'👁️', t:'极低可见度', d:'成果容易被忽视，导师常不清楚其实际研究进展。' },
+      { i:'📡', t:'信息同步滞后', d:'与学术圈的动态信息保持过度隔离，可能错过重要节点。' },
+      { i:'🤝', t:'协作成本高', d:'切换到团队工作模式时存在明显的适应摩擦。' },
+    ]
+  },
+  JRSA:{ g:'JR', e:'🎭', name:'组会影帝',
+    tag:'将有限进展以最优框架呈现的叙事工程师',
+    meme:'本周进展：零。组会表现：满分。能用"理论框架的前置性重构"描述自己在摸鱼，用"数据质量的深度审查"解释为什么还没跑完模型。导师点头，众人信服。',
+    desc:'JRSA 型个体拥有出色的实时叙事重构能力，能够在高压的信息展示场景中，将"本周进展不多"这一核心现实，通过严密的学术叙事结构转化为一场令人信服的汇报。这一能力本质上是一种高阶认知灵活性，在跨学科沟通与学术答辩等场景中具有真实价值。其最大风险在于：叙事能力长期优于实际产出时，两者之间的裂缝最终由毕业论文来填平。',
+    q:'"这周主要是在做理论框架的深度梳理与方法论的前置性思考。"（翻译：没动）',
+    strengths:[
+      { i:'🎙️', t:'临场叙事能力', d:'能够在高压环境下迅速构建逻辑自洽的语言表述。' },
+      { i:'🧠', t:'认知灵活性', d:'在多种学术场景中快速切换框架，跨学科沟通得心应手。' },
+      { i:'😌', t:'高压下的镇定', d:'组会、答辩等高压场景中能保持清晰和从容。' },
+    ],
+    weaknesses:[
+      { i:'📉', t:'表述与进展偏差', d:'实际研究进展与组会表现之间存在系统性的结构性落差。' },
+      { i:'🔍', t:'深度审查风险', d:'当遭遇真正的内容追问时，叙事框架可能难以支撑。' },
+      { i:'⏳', t:'裂缝积累效应', d:'自我认知与现实进展之间的偏差随时间持续扩大。' },
+    ]
+  },
+  JRSB:{ g:'JR', e:'🤝', name:'学界说客',
+    tag:'以人际资本撬动学术资源的关系型研究者',
+    meme:'学术会议不去听报告，专门去茶歇。认识所有大牛，且所有大牛都记得他。手机通讯录是他最重要的学术成果，合作论文比独立论文多，且引用数更高。',
+    desc:'JRSB 型个体深刻内化了学术生产的社会性本质，并以构建高质量人际网络作为其核心学术策略。他们对学科生态具有敏锐的结构洞察力，善于识别不同研究者之间的互补性，并将自身定位为知识流动的枢纽节点。这一策略在合作主导的现代学术环境中具有显著的竞争优势，其潜在风险在于：当网络构建本身成为目的时，独立研究能力可能出现系统性萎缩。',
+    q:'"我认识这个领域的几个人，要不要帮你引荐一下？"',
+    strengths:[
+      { i:'🌐', t:'人际感知力', d:'能够精准识别不同研究者之间的互补可能，并快速建立连接。' },
+      { i:'🔗', t:'资源枢纽角色', d:'将自身定位为知识流动的节点，在合作生态中具有稀缺价值。' },
+      { i:'📞', t:'广泛的合作网络', d:'通讯录即学术简历，每个联系人都是潜在的合作入口。' },
+    ],
+    weaknesses:[
+      { i:'🔬', t:'独立研究萎缩', d:'过度依赖合作可能导致独立研究能力随时间下降。' },
+      { i:'🏠', t:'网络失效风险', d:'当人际网络失效时，缺乏备用的独立研究策略。' },
+      { i:'⚖️', t:'合法性质疑', d:'学术成果多为合作产出，在个人学术评估中可能受到质疑。' },
+    ]
+  },
+  JFIA:{ g:'JF', e:'😰', name:'内耗大师',
+    tag:'将焦虑转化为学术燃料的情绪炼金师',
+    meme:'努力程度全组第一，崩溃程度也全组第一。深夜发朋友圈"感觉自己什么都不会"，配一张实验室夜景图，发出去十分钟后默默删掉。第二天照常第一个到。',
+    desc:'JFIA 型个体的核心心理结构呈现出高驱动力与高情绪敏感性的持续张力。他们对自身学术表现的期待值始终高于当前产出，这一落差构成了其主要的内在压力源。与一般焦虑不同，JFIA 型人的焦虑具有明确的自我驱动功能——正是这种不安全感，使其保持着持续的行动状态。其成长课题在于学会区分"有效努力"与"情绪性勤奋"。',
+    q:'"我感觉我什么都不会，但我不能停下来。"',
+    strengths:[
+      { i:'🔥', t:'高度自我驱动', d:'持续的内在压力转化为强大的行动动力，从不轻易放弃。' },
+      { i:'🎯', t:'质量敏感度高', d:'对自身输出的质量缺陷极为敏感，追求高标准。' },
+      { i:'💪', t:'韧性强', d:'在高压和挫折中具有顽强的恢复与坚持能力。' },
+    ],
+    weaknesses:[
+      { i:'🌀', t:'情绪性内耗', d:'大量认知资源消耗在情绪管理上，有效产出效率受损。' },
+      { i:'🔁', t:'无效焦虑循环', d:'容易陷入"越焦虑→越低效→越焦虑"的闭环。' },
+      { i:'✅', t:'难以接受"够好"', d:'"已经达标"无法带来满足感，持续追求完美导致消耗。' },
+    ]
+  },
+  JFIB:{ g:'JF', e:'🪶', name:'论文诗人',
+    tag:'在严谨与浪漫之间寻找学术平衡点的美学践行者',
+    meme:'引言写得像散文，结论写得像宣言。审稿人评语永远是"语言需精炼"，他永远在修改"但这句话我真的很喜欢"的那段。参考文献里夹着两本文学批评。',
+    desc:'JFIB 型个体以美学感知力介入学术生产过程，倾向于在严谨的论证框架内保留个人叙事风格与情感温度。他们相信优秀的研究应当具备可读性，并愿意为此投入超出常规的表达成本。其作品在同类中往往具有辨识度，但也频繁与"规范化""简洁性"等学术审美标准产生摩擦。',
+    q:'"这个研究问题，让我想到了加缪的一段话……"',
+    strengths:[
+      { i:'✍️', t:'卓越文字表达', d:'具备将复杂论点转化为兼具深度与可读性叙事的能力。' },
+      { i:'🎨', t:'独特审美视角', d:'以美学眼光介入研究，作品具有高度的个人风格辨识度。' },
+      { i:'❤️', t:'深度情感投入', d:'对研究课题的真诚热情能够转化为持续的创作驱动力。' },
+    ],
+    weaknesses:[
+      { i:'✂️', t:'表达成本过高', d:'在文字打磨上投入超出必要的时间，压缩了研究推进效率。' },
+      { i:'📋', t:'审稿人适配性差', d:'文学化的学术表达风格与规范化审稿偏好存在持续摩擦。' },
+      { i:'⏰', t:'修改周期延长', d:'因情感投入导致难以接受对钟爱表达的删改建议。' },
+    ]
+  },
+  JFSA:{ g:'JF', e:'🌀', name:'囤题狂魔',
+    tag:'在并行任务流中寻找超线性产出的高能量研究者',
+    meme:'同时在推进六个课题，每个都说"快出结果了"。笔记本上写满了新想法，其中三分之一已被别人发表，另外三分之一自己也不记得了。导师问进展，他说"方向很多，正在收敛"。',
+    desc:'JFSA 型个体以旺盛的认知发散性与高度的创新敏感性为显著特征，对新研究问题具有接近条件反射的兴趣激活机制。他们的思维模式天然倾向于拓展而非深挖，在研究方向探索阶段具有不可替代的价值，但在需要持续深耕的执行阶段则构成主要阻力。其成长关键在于发展出个人化的"课题筛选协议"。',
+    q:'"我现在同时在推进六个方向，感觉都很有前景。"',
+    strengths:[
+      { i:'💡', t:'创意发散力', d:'对新研究问题的兴趣激活几乎是即时的，创意产出能力突出。' },
+      { i:'🌉', t:'跨领域连接', d:'善于在不同学科之间建立非常规的创新性联结。' },
+      { i:'🎯', t:'方向嗅觉', d:'对有潜力的新研究方向具有较强的直觉识别能力。' },
+    ],
+    weaknesses:[
+      { i:'📡', t:'注意力稀释', d:'并行推进多个方向导致每个方向的深度严重不足。' },
+      { i:'📅', t:'承诺超载', d:'接受的任务数量长期超出实际执行能力的上限。' },
+      { i:'🔄', t:'"快出结果"永久态', d:'所有课题长期处于进行中但没有完成的结构性状态。' },
+    ]
+  },
+  JFSB:{ g:'JF', e:'📱', name:'流量学者',
+    tag:'以学术内容为媒介构建公共知识影响力的传播型研究者',
+    meme:'论文三篇，粉丝十万。每篇推文都能引爆朋友圈，每次演讲都座无虚席。被问到最新研究进展时，话题自然切换到"我最近在做一个科普系列"。导师喜忧参半。',
+    desc:'JFSB 型个体具有将高密度学术信息转化为大众可接受叙事的卓越能力，并对"知识传播"本身抱有真诚的价值认同。他们深刻理解注意力在现代知识生态中的战略意义，以此构建了独特的个人学术品牌。其面临的核心张力在于：影响力的快速积累往往早于学术资历的系统建立，这一时序错位在同行评审体系中可能引发合法性质疑。',
+    q:'"这篇推文阅读量破十万了，比我发 SSCI 还高兴。"',
+    strengths:[
+      { i:'📢', t:'知识传播力', d:'将复杂学术内容转化为大众叙事的能力在学术圈极为稀缺。' },
+      { i:'⏱️', t:'热点敏感度', d:'对社会议题与学术内容的交叉点具有精准的时机把握能力。' },
+      { i:'🌍', t:'社会影响力', d:'能够将学术知识的受众扩展到学术圈以外，创造更广泛价值。' },
+    ],
+    weaknesses:[
+      { i:'⚖️', t:'合法性时序错位', d:'传播影响力建立早于学术资历积累，可能在学术评价中受到质疑。' },
+      { i:'⚗️', t:'严谨性与传播性冲突', d:'学术严谨度与大众传播友好度之间存在持续的平衡难题。' },
+      { i:'📄', t:'论文产出压力', d:'传播工作占用了大量本可用于学术研究的时间与精力。' },
+    ]
+  },
+  LRIA:{ g:'LR', e:'✨', name:'考前圣人',
+    tag:'在资源约束条件下实现效用最大化的非线性学习者',
+    meme:'平时在哪里没人知道。考前三天出现，借走所有人的笔记，关进宿舍。考后成绩第一，还给笔记时顺带附赠一句"还好还好，没怎么复习"。事后无人追究，因为大家都知道说了也没用。',
+    desc:'LRIA 型个体的学习模式呈现出显著的非线性特征，其认知资源的调配高度依赖外部截止信号的激活。在无明确时间压力的状态下，其系统处于低功耗待机模式；而当 deadline 进入临界区间，高强度的认知聚焦状态被迅速触发，信息处理效率出现跃升。这一机制在进化心理学角度具有合理的解释框架——在资源有限的条件下，将认知能量集中于高确定性收益窗口。',
+    q:'"没事，我考前再看。"（三天后：全会了）',
+    strengths:[
+      { i:'🚀', t:'临界爆发力', d:'在极端时间压力下，信息整合与处理效率远超平时水平。' },
+      { i:'🧘', t:'低焦虑耐受', d:'能够在长期"无进展"状态下保持心理稳定，不被焦虑裹挟。' },
+      { i:'🎯', t:'结果导向', d:'最终产出往往证明了这套非线性策略的真实有效性。' },
+    ],
+    weaknesses:[
+      { i:'👻', t:'平时近乎隐形', d:'在非考试、非截止日节点期间，可见度和互动度极低。' },
+      { i:'📅', t:'长期规划缺失', d:'高度依赖截止信号，缺乏在没有外部压力时自主推进的能力。' },
+      { i:'😵', t:'旁观者困惑', d:'这套策略对周围同学造成持续的存在性困惑和心理冲击。' },
+    ]
+  },
+  LRIB:{ g:'LR', e:'🫖', name:'慢炖学者',
+    tag:'遵循内在节律、对外部时间焦虑免疫的稳态学习者',
+    meme:'导师催了半年，他说"快了"。又催了三个月，他说"在收尾"。某天突然发来一篇完整稿件，逻辑严密、数据扎实，仿佛从未拖延过。导师沉默三秒，回复"好"。',
+    desc:'LRIB 型个体的时间感知模式与外部学术节律之间存在结构性的频率差异。他们并非缺乏执行力，而是拥有一套完全内化的任务成熟判断机制——只有当研究在认知层面达到某种内在完整性时，才会进入输出阶段。最终产出往往证明一切等待都是值得的，但代价是与外部节点系统的持续摩擦。',
+    q:'"快了快了，就差最后一点了。"（已说六个月）',
+    strengths:[
+      { i:'💎', t:'产出质量稳定', d:'经过深度内化的研究成果具有高完成度和强内在一致性。' },
+      { i:'🛡️', t:'焦虑免疫力', d:'不被学术圈普遍的焦虑文化所裹挟，保持内在稳定。' },
+      { i:'🔮', t:'高度自洽', d:'对自身研究节奏有清晰的内在判断，不需要外部验证。' },
+    ],
+    weaknesses:[
+      { i:'🕐', t:'进度可视化为零', d:'外部无法获知任何有效的研究进展信息，令导师持续担忧。' },
+      { i:'⚡', t:'节点摩擦频繁', d:'与外部时间节点系统（考核、汇报、投稿）持续产生冲突。' },
+      { i:'❤️‍🩹', t:'导师血压风险', d:'长期"快了快了"对指导教师的心理健康构成客观影响。' },
+    ]
+  },
+  LRSA:{ g:'LR', e:'🗺️', name:'跨界游侠',
+    tag:'在跨学科知识图谱中自由游走的T型认知结构者',
+    meme:'什么都懂一点，哪个组都混过。没有固定研究方向，但任何方向的组会他都能插上话。被问到专业时说"方向比较交叉"，被问到进展时说"我认识一个更专业的，要不要介绍"。',
+    desc:'LRSA 型个体具有宽域知识图谱与出色的跨域联结能力，倾向于在学科边界地带寻找研究切入点。他们对单一领域的深度专注缺乏持续动力，但对不同知识体系之间的结构性联系具有天然的识别敏感性。其核心竞争力在于：总能认识那个"最懂这个"的人。游侠最终需要一片属于自己的江湖。',
+    q:'"这个方向我了解一些，不过我有个朋友更专业，要不要介绍一下？"',
+    strengths:[
+      { i:'🌐', t:'跨域联结力', d:'能在不同学科之间快速识别结构性联系并建立有效连接。' },
+      { i:'🚪', t:'快速切入能力', d:'在任何领域的讨论中均能找到有效的参与切入点。' },
+      { i:'🤲', t:'广泛人脉网络', d:'游走于多个学科群体之间，积累了跨领域的人际资源。' },
+    ],
+    weaknesses:[
+      { i:'🔭', t:'纵深不足', d:'宽广的知识边界以牺牲单一领域深度为代价，难以成为专家。' },
+      { i:'🏠', t:'缺乏定居地', d:'长期游走导致缺乏能够深度证明自身价值的核心领域。' },
+      { i:'📌', t:'方向漂移风险', d:'在需要聚焦的关键阶段容易被新的跨界机会所吸引而偏离。' },
+    ]
+  },
+  LRSB:{ g:'LR', e:'😄', name:'学界活宝',
+    tag:'在学业与生活之间实现帕累托最优的幸福感研究者',
+    meme:'全组最快乐的人，也是唯一没有黑眼圈的人。该交的都按时交，该玩的从不亏待自己。大家焦虑时他在打游戏，大家摆烂时他已经把作业写完了。令人困惑，令人羡慕。',
+    desc:'LRSB 型个体在高压学术生态中实现了罕见的心理动态平衡，其核心特征是对学业目标与个人边界的清晰双重锚定。他们既不被焦虑文化所裹挟，也不陷入虚无主义的躺平状态，而是形成了一种基于内在稳定性的务实从容。心理学研究表明，这一特质与高水平的自我效能感及情绪调节能力强相关。',
+    q:'"科研嘛，尽力就好，生活还是要有的。"',
+    strengths:[
+      { i:'⚖️', t:'动态平衡能力', d:'在学业压力与生活质量之间实现了同类中罕见的稳定均衡。' },
+      { i:'😊', t:'正向情绪传导', d:'对周围同学具有自然的情绪稳定和积极影响效应。' },
+      { i:'🏃', t:'恢复力强', d:'能够在科研压力中最快完成心理恢复，保持持续的工作状态。' },
+    ],
+    weaknesses:[
+      { i:'📈', t:'上限受限', d:'"够用就行"的边界意识在极度竞争环境中可能形成天花板。' },
+      { i:'🏆', t:'竞争优势不足', d:'在高强度竞争场景中，整体投入度可能不及极端卷型对手。' },
+      { i:'🤷', t:'被误解为不认真', d:'从容的外表有时被他人误读为缺乏进取心或不够投入。' },
+    ]
+  },
+  LFIA:{ g:'LF', e:'🤔', name:'摆烂哲人',
+    tag:'将学术停滞升华为哲学命题的深度思考型研究者',
+    meme:'把躺平讲出了人生哲学的高度。"慢即是快""无为而治""放空是一种积累"——每一句都能说服自己，偶尔也能说服导师。论文没写完，但关于"为什么没写完"的思考已够写一篇论文。',
+    desc:'LFIA 型个体具有将任意现实状态赋予意义框架的强大认知再建构能力。他们不逃避对自身处境的审视，而是主动将其纳入更宏观的哲学叙事——这一过程本身构成了真实的思想活动。其核心成长议题在于区分"有深度的反思性停顿"与"以反思为名的持续回避"——两者的外部表现高度相似，但内在机制截然不同。',
+    q:'"我觉得现在的停滞，其实是一种更高层次的积累。"',
+    strengths:[
+      { i:'🛡️', t:'焦虑天然免疫', d:'对学术圈普遍焦虑文化具有近乎完美的心理防护能力。' },
+      { i:'🔭', t:'宏观思维框架', d:'能够将具体处境纳入更广阔的哲学意义框架进行解读。' },
+      { i:'🗣️', t:'自我阐释能力', d:'对任何状态都能生成令人信服的深刻解释，具有强大说服力。' },
+    ],
+    weaknesses:[
+      { i:'📝', t:'实际产出不稳定', d:'研究实际进展可能长期处于"思考阶段"而缺乏有形输出。' },
+      { i:'🔍', t:'反思与回避的边界', d:'深刻的哲学阐释有时成为回避实际推进的精密保护机制。' },
+      { i:'⏳', t:'时间感知失真', d:'对外部时间节点的感知与实际节奏存在持续的偏差。' },
+    ]
+  },
+  LFIB:{ g:'LF', e:'🌟', name:'天命学神',
+    tag:'以最小显性努力实现最优学术产出的效率异常个体',
+    meme:'从不在图书馆出现，不参加学习小组，考前说"没怎么看"，成绩出来排第一。没有人见过他学习，但也没有人怀疑他的成绩。学界将其列为未解之谜，本人表示"运气好"。',
+    desc:'LFIB 型个体是现有学习模型中最具挑战性的异常样本。其学业表现与可观测的学习行为之间存在极度显著的正向偏差，无法被已知的时间投入模型或努力—产出函数所解释。目前唯一可以确定的是：这类人的存在，对周围同学的心理健康构成了一定程度的客观威胁，且本人对此毫无察觉。',
+    q:'"还好还好，没怎么看。"（满分）',
+    strengths:[
+      { i:'✨', t:'效率异常', d:'以无法被解释的最小显性投入实现持续的最优学术产出。' },
+      { i:'🧘', t:'心理平静', d:'不受任何形式的学术焦虑文化影响，始终保持内在平静。' },
+      { i:'🎯', t:'天然知识结构', d:'可能具有某种特殊的知识内化与结构化能力，超越常规学习机制。' },
+    ],
+    weaknesses:[
+      { i:'📚', t:'方法论不可复制', d:'无法为他人提供任何有参考价值的学习方法论。' },
+      { i:'😵', t:'周围人心理威胁', d:'存在本身对同学的自我认知构成持续的客观挑战。' },
+      { i:'🔬', t:'无法被理论解释', d:'其成功路径既无法被验证也无法被推广，具有孤例特征。' },
+    ]
+  },
+  LFSA:{ g:'LF', e:'🍿', name:'学界看客',
+    tag:'以旁观者视角深度参与学术生态的情境感知者',
+    meme:'永远知道组里发生了什么，但永远不是事件主角。谁在卷、谁在躺、谁和导师闹了矛盾——他全知道。本人对此不置可否，继续安静地存在着，像一棵见证了太多的树。',
+    desc:'LFSA 型个体以高度敏感的社会信息感知能力为核心特征，对周围学术环境的动态变化保持着持续而低调的关注。他们的行为模式高度情境依赖，倾向于将群体共识作为个人行动的参照基准。这并非冷漠，更接近于一种审慎的观望——他们在等待一个足够充分的理由，将自己从观众席移步舞台中央。这个理由，有时会来，有时不会。',
+    q:'"大家都怎么做的？……好，那我也那样。"',
+    strengths:[
+      { i:'📡', t:'社会感知雷达', d:'对学术圈的人际动态和信息流动具有高度敏感的感知能力。' },
+      { i:'🌊', t:'软着陆能力', d:'在任何学术文化和团队氛围中均能快速适应并稳定存在。' },
+      { i:'🔋', t:'能耗极低', d:'从不因逆势而为产生额外的心理损耗，精力储备高效。' },
+    ],
+    weaknesses:[
+      { i:'🎬', t:'主角缺席', d:'长期停留在观察者位置，主动引领和主导的机会持续错过。' },
+      { i:'⏱️', t:'行动窗口流失', d:'在观望中容易错过需要快速决策和行动的关键时间节点。' },
+      { i:'🧭', t:'内驱力模糊', d:'缺乏清晰的独立行动驱动力，需要外部参照才能启动。' },
+    ]
+  },
+  LFSB:{ g:'LF', e:'⚡', name:'DDL战神',
+    tag:'以截止时间为核心驱动变量的非常规高效能研究者',
+    meme:'截止前两小时打开文档，截止前三十分钟写完，截止前五分钟提交，得了优秀。全程气定神闲，事后表示"时间还挺够的"。旁观者血压升高，他本人睡得很香。',
+    desc:'LFSB 型个体与时间的关系构成了对传统时间管理理论的系统性反例。其认知激活机制呈现出高度的截止时间依赖性——在外部时间压力进入临界区间之前，其执行系统处于稳定的低激活状态；而当压力信号触发阈值，认知资源以近乎爆发的方式完成重新分配，信息处理速度与决策效率同步达峰。学界将这一现象命名为"DDL 诱导的认知涌现效应"。',
+    q:'"还有一个小时，够了。"（真的够了）',
+    strengths:[
+      { i:'💥', t:'极限爆发力', d:'在截止时间临界区间，认知效率实现几何级别的跃升。' },
+      { i:'🧊', t:'高压下的冷静', d:'在旁观者极度焦虑的时刻保持近乎超然的心理稳定。' },
+      { i:'✅', t:'结果实际有效', d:'最终产出质量持续验证了这套非常规策略的真实可行性。' },
+    ],
+    weaknesses:[
+      { i:'⏰', t:'单点依赖风险', d:'过度依赖截止机制，完全缺乏任何形式的提前量储备。' },
+      { i:'❤️‍🩹', t:'旁观者血压', d:'对周围同学的心理健康构成持续性的客观影响。' },
+      { i:'⚰️', t:'不可重来的场景', d:'在截止时间不提供第二次机会的高风险场景中存在系统性漏洞。' },
+    ]
+  },
+};
+
+const PSYCH_DESC = {
+  JRIA:'JRIA 型个体可以理解为高成就动机、强责任心与高时间紧迫感的组合。对他们来说，任务不是外部要求，而是自我价值维持的一部分；完成、提前完成、超标准完成都会带来明确的内在奖赏。这类人往往具备稳定的自我调节能力，能把长期目标拆成可执行步骤，但也容易把"持续高投入"误认为唯一正确的工作伦理。当休息被解释为失控或退步时，身体反馈就会被长期压低。真正需要发展的不是更强的自律，而是更灵活的标准感：知道什么时候推进，什么时候恢复，什么时候允许别人用不同节奏完成同样有效的工作。',
+  JRIB:'JRIB 型个体更接近低刺激偏好、高专注需求与强自主性的组合。他们的心理能量主要投向内部加工，安静环境能帮助其维持深度注意、延迟满足和长链条推理。与其说他们孤僻，不如说他们对噪声、即时反馈和频繁社交的容忍度较低，因此会主动创造一个稳定的认知生态位。这种模式很适合理论梳理、资料消化和需要长时间沉潜的研究，但外部可见度常常不足。其成长重点不是变得外向，而是建立最低限度的进度信号，让深度工作不被误读为消失，也让必要协作有进入他们世界的入口。',
+  JRSA:'JRSA 型个体体现的是高自我呈现能力、强情境判断与快速认知重构。被评价时，他们能迅速识别听众期待，把零散进展组织成有因果、有阶段、有前景的叙事框架。这不是单纯"会说"，而是一种真实的社会认知能力：他们知道什么信息能降低导师的不确定感，也知道如何把压力转化为可交流的结构。问题在于，叙事系统一旦长期领先于行动系统，就会形成自我安慰效应，使人误以为解释充分等于进展充分。最适合他们的成长方式，是把表达优势反向用于执行管理：每次汇报前预留一个无法被语言替代的硬产出。',
+  JRSB:'JRSB 型个体的核心是高社会取向、强关系敏感性与资源整合能力。他们很早意识到学术并不是孤立个体的纯智力竞赛，而是由合作、声誉、信任和机会共同构成的生态系统。心理学上，这类人擅长利用弱连接、结构洞和互惠预期，把人际资本转化为研究机会。优势在于他们能降低协作成本，让不同知识单元彼此接触；风险在于外部关系奖励太快，可能削弱独立问题意识和深度训练。更成熟的 JRSB 不只是认识很多人，而是能在网络中稳定贡献不可替代的判断、方法或内容。',
+  JFIA:'JFIA 型个体可以看作高成就追求与高负性情绪敏感度的叠加。焦虑在他们身上并不只是痛苦感受，也是一种启动器：它提醒风险、推高标准、迫使行动，因此短期内确实能提升投入。但如果自我评价过度依赖缺陷扫描，心理系统就会把"还不够好"当成默认状态，形成完美主义与情绪性勤奋的循环。此类人的关键不是消灭焦虑，而是提高情绪辨别能力：哪些不安来自真实问题，哪些只是习惯性威胁感。只有把行动从自责中分离出来，他们的高敏感才会变成质量控制，而不是持续内耗。',
+  JFIB:'JFIB 型个体具有较高的开放性、审美敏感度和叙事型思维。他们不满足于把研究写成信息搬运，而希望让论证具备节奏、温度和可读性；这种倾向常来自较强的情感编码能力，即他们会把知识与个人经验、价值判断和语言质感联系起来。优势是作品容易形成辨识度，读者也更容易被带入问题本身；盲区是对表达的情感依恋会拉长修改周期，并与学术写作中的精炼规范发生冲突。成熟的 JFIB 需要把"美"定义为服务论证的清晰，而不是保留每一句自己喜欢的话。',
+  JFSA:'JFSA 型个体表现出高开放性、强新奇寻求和突出的发散思维。新的问题会快速激活他们的兴趣系统，因为每个方向都像一个可能带来发现的入口；这使他们在选题早期、跨域联想和创新假设生成上非常有价值。心理机制上，他们更偏向探索而非利用，更容易被潜在可能性奖励，而不是被完成本身奖励。问题也由此出现：注意力在多个方向间切换时，每个课题都获得了启动能量，却未必获得足够的收束能量。成长关键是建立明确的筛选和终止规则，让创意进入少数高质量通道。',
+  JFSB:'JFSB 型个体结合了表达动机、社会反馈敏感性和公共影响力取向。他们能站在受众认知负荷的位置重新组织知识，把专业内容转化为更易理解、更易传播的叙事，这是一种真实的心理换位能力。外界反馈会强化他们的身份感，使其逐渐把"被理解、被转发、被讨论"视为学术价值的一部分。优势在于扩大知识的社会生命，盲区在于反馈指标可能比研究深度更快给出奖励，进而诱发表演化倾向。成熟的 JFSB 需要把传播当作研究的延伸，而不是替代：先有可靠内容，再有漂亮抵达。',
+  LRIA:'LRIA 型个体的特点是平时低唤醒、临界期高唤醒，接近一种由外部截止信号触发的非线性学习模式。按照唤醒水平与表现关系的思路，适度压力能提升注意集中和信息整合，而他们恰好对这种压力窗口高度敏感。平时看似松散，并不一定代表能力不足，而是系统尚未判断当前投入有足够收益。优势是能在短时间内抓住重点、压缩路径、完成高效复盘；风险是他们容易低估任务的不确定性，尤其是需要长期积累、实验失败或多人协作的场景。更稳定的策略，是在爆发前保留最小启动量。',
+  LRIB:'LRIB 型个体更像高自主节律、低外部焦虑反应和强内在成熟标准的组合。他们对任务是否"可以输出"有自己的判断，往往需要经过较长的潜伏、消化和重组阶段，才愿意把结果交给外界。心理学中的孵化效应可以解释其中一部分：看似没有动作的时间，可能正在进行隐性的结构整理。优势是成品常常自洽、耐看、返工少；问题是外部世界无法读取这段内部加工，于是会把它理解为拖延或失联。成熟的 LRIB 不必牺牲自己的节律，但需要用阶段性证据降低他人的不确定感。',
+  LRSA:'LRSA 型个体体现的是广域注意、边界跨越和联想型认知。他们对单一学科的纵深训练不一定最有耐心，却能敏锐发现不同知识系统之间的相似结构、互补资源和潜在接口。社会层面上，他们也常通过弱连接获得信息，因此知道谁在做什么、哪里有机会、哪个领域可以借用另一个领域的方法。优势在于他们适合做桥梁、问题发现者和跨学科入口；盲区是长期漂移会让个人能力难以被清晰命名。真正成熟的 LRSA 需要一块根据地：保持跨界，但让跨界服务一个稳定的问题。',
+  LRSB:'LRSB 型个体的心理基础是较强的自我效能感、边界意识和情绪调节能力。他们不会把持续焦虑当成认真，也不会把短暂放松解释为堕落，而是能根据目标重要性分配投入强度。按照自我决定理论的视角，这类人更接近由内在认可和现实判断共同驱动，而非被单一外部比较牵引。优势是可持续、恢复快、团队气氛稳定；潜在问题是过强的"够用"判断可能限制其在高竞争场景中的上限。成长方向不是变卷，而是学会识别少数值得破例投入的关键机会。',
+  LFIA:'LFIA 型个体擅长意义建构、认知重评和抽象化解释。他们会把现实中的停滞、犹豫或低行动转化为更大的思想框架，以此维持自我一致性和心理稳定。这种能力并非虚假，认知重评确实能降低焦虑，也能帮助人从短期压力中抽离出来看长期问题。风险在于，解释系统如果过于强大，就可能滑向理智化防御：每一次回避都被包装成深刻，每一次拖延都被理解为沉淀。成熟的 LFIA 需要为反思设置行为出口，让思想最后能落到一个小动作、一段文字或一次真实推进上。',
+  LFIB:'LFIB 型个体看似违背努力-产出模型，但更合理的解释通常不是玄学，而是高先验知识、快速模式识别、低考试焦虑和高效编码共同作用。他们可能在平时通过隐性接触完成了大量无意识积累，因此正式学习时只是在调用已有结构。低焦虑也让他们在测验或截止场景中减少了认知资源损耗，表现出近似"没怎么学也会"的效果。优势是效率惊人、心态稳定；盲区是他们很难讲清自己的方法，也容易低估他人需要显性步骤。若能把隐性策略外化，LFIB 的能力会从个人天赋变成可迁移的系统。',
+  LFSA:'LFSA 型个体具有高情境敏感性、强社会观察和较低主动暴露倾向。他们会持续扫描周围环境：谁在加速，谁在观望，导师偏好什么，群体规范正在往哪里移动。这接近一种观察学习策略，先通过他人的结果降低不确定性，再决定自己的行动。优势是适应性强、风险控制好，很少在错误时机冲出去；问题是过度依赖外部参照会削弱主体感，让行动总是晚半拍。成熟的 LFSA 需要把观察转化为判断，而不是等待共识替自己做决定。',
+  LFSB:'LFSB 型个体高度依赖截止时间带来的动机加速。按照时间动机理论，任务价值、成功期待、延迟距离和冲动性会共同影响行动启动；对这类人而言，截止越近，任务的心理现实感越强，注意力才会迅速聚焦。高压会让他们进入短暂的流畅状态，决策更快、取舍更狠、废话更少。优势是临界区间的执行效率极高；风险是系统缺少缓冲，任何意外都会直接击穿计划。成熟的 LFSB 不是提前一个月开始，而是至少为不可控因素预留一个小而真实的安全垫。'
+};
+
+Object.entries(PSYCH_DESC).forEach(([code,desc])=>{ T[code].desc=desc; });
+
+const Qs=[
+  {t:'即便没有人要求，我也会主动把事情做到更高的标准。',d:0,lbl:'维度一 · 努力度'},
+  {t:'看到身边的同学比自己进展快，我会感到压力并加快步伐。',d:0,lbl:'维度一 · 努力度'},
+  {t:'我为自己设定的目标，通常远高于外部的实际要求。',d:0,lbl:'维度一 · 努力度'},
+  {t:'即使没有截止日期，我也能保持稳定持续的学习状态。',d:0,lbl:'维度一 · 努力度'},
+  {t:'"差不多就行"这种心态，会让我感到一种隐约的不适。',d:0,lbl:'维度一 · 努力度'},
+  {t:'做决策时，我更依赖数据与逻辑分析，而非直觉与感受。',d:1,lbl:'维度二 · 思维型'},
+  {t:'选择研究方向时，发表前景比个人兴趣对我更具决定性。',d:1,lbl:'维度二 · 思维型'},
+  {t:'面对批评，我通常能较快抽离情绪，专注于内容本身。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我认为，在争论中引用证据比诉诸情感更有说服力。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我相信，过于感性会在专业场合中产生干扰。',d:1,lbl:'维度二 · 思维型'},
+  {t:'独自工作时，我的状态和效率通常比在团队中更好。',d:2,lbl:'维度三 · 社交型'},
+  {t:'即便是愉快的社交活动，长时间后也会让我感到精力消耗。',d:2,lbl:'维度三 · 社交型'},
+  {t:'我更倾向于独立完成任务，而不是依赖团队协作分工。',d:2,lbl:'维度三 · 社交型'},
+  {t:'我认为学术上的深度个人钻研，比广泛的人脉网络更有长远价值。',d:2,lbl:'维度三 · 社交型'},
+  {t:'我不需要太多同伴互动，也能维持良好的工作状态。',d:2,lbl:'维度三 · 社交型'},
+  {t:'知道有任务尚未完成时，我会持续感到一种隐性焦虑。',d:3,lbl:'维度四 · 时间型'},
+  {t:'我通常会提前于截止日期完成工作，给自己留出检查时间。',d:3,lbl:'维度四 · 时间型'},
+  {t:'没有明确计划的日子，会让我感到一种难以言说的不安。',d:3,lbl:'维度四 · 时间型'},
+  {t:'我倾向于立即开始处理任务，而不是等待更合适的时机。',d:3,lbl:'维度四 · 时间型'},
+  {t:'我的待办事项清单，通常是实时更新、条目清晰的。',d:3,lbl:'维度四 · 时间型'},
+];
+
+const OPTS=[
+  {l:'完全不同意',v:1},{l:'有点不同意',v:2},{l:'中立',v:3},{l:'有点同意',v:4},{l:'完全同意',v:5}
+];
+
+const DL=[{a:'卷 J',b:'躺 L'},{a:'理 R',b:'感 F'},{a:'独 I',b:'群 S'},{a:'急 A',b:'缓 B'}];
+
+/* ═══════════════ STATE ═══════════════ */
+let S={page:'home',q:0,ans:Array(20).fill(null)};
+
+/* ═══════════════ NAV ═══════════════ */
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  S.page=page; window.scrollTo(0,0);
+  if(page==='types') drawGrid('types-grid','all');
+}
+
+function startTest(){
+  S.q=0; S.ans=Array(20).fill(null);
+  go('test'); renderQ();
+}
+
+/* ═══════════════ TEST ═══════════════ */
+function renderQ(){
+  const n=S.q,q=Qs[n],tot=Qs.length;
+  document.getElementById('t-ctr').textContent=`第 ${n+1} 题 / 共 ${tot} 题`;
+  document.getElementById('t-dim').textContent=q.lbl;
+  document.getElementById('t-q').textContent=q.t;
+  document.getElementById('prog').style.width=(n/tot*100)+'%';
+  document.getElementById('t-scale').innerHTML=OPTS.map(o=>`
+    <div class="sopt${S.ans[n]===o.v?' on':''}" onclick="pick(${o.v},this)">
+      <div class="sdot"></div><span class="slabel">${o.l}</span>
+    </div>`).join('');
+  document.getElementById('btn-back').style.visibility=n===0?'hidden':'visible';
+  const bn=document.getElementById('btn-next');
+  bn.disabled=S.ans[n]===null;
+  bn.textContent=n===tot-1?'查看结果 →':'下一题 →';
+}
+function pick(v,el){
+  S.ans[S.q]=v;
+  document.querySelectorAll('.sopt').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('btn-next').disabled=false;
+}
+function nextQ(){ if(S.ans[S.q]===null)return; if(S.q<Qs.length-1){S.q++;renderQ();}else showResult(); }
+function prevQ(){ if(S.q>0){S.q--;renderQ();} }
+
+/* ═══════════════ SCORING ═══════════════ */
+function calcType(){
+  const keys=['JL','RF','IS','AB']; let code='',scores=[];
+  for(let d=0;d<4;d++){
+    const avg=S.ans.slice(d*5,(d+1)*5).reduce((a,b)=>a+b,0)/5;
+    scores.push(avg); code+=avg>3?keys[d][0]:keys[d][1];
+  }
+  return{code,scores};
+}
+
+/* ═══════════════ RESULT PAGE ═══════════════ */
+function showResult(){
+  const{code,scores}=calcType();
+  go('result');
+  const tp=T[code],grp=G[tp.g],c=grp.color;
+  const bars=scores.map((avg,i)=>{
+    const pct=Math.round((avg-1)/4*100),isA=avg>3,lp=isA?pct:100-pct;
+    return`<div class="dim-row">
+      <div class="dim-top">
+        <span style="color:${c};font-weight:700">${isA?DL[i].a:DL[i].b} ${lp}%</span>
+        <span style="color:#bbb">${isA?DL[i].b:DL[i].a} ${100-lp}%</span>
+      </div>
+      <div class="dim-rail"><div class="dim-fill" style="width:0%;background:${c}" data-w="${lp}"></div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('result-root').innerHTML=`
+    <div class="res-hero" style="background:linear-gradient(150deg,${grp.dark} 0%,${c}dd 100%)">
+      <div class="res-hero-inner">
+        <div class="res-grp">${grp.name}</div>
+        <div class="res-code">${code}</div>
+        <div class="res-name">${tp.e} ${tp.name}</div>
+        <div class="res-tag">${tp.tag}</div>
+        <div class="res-cta-row">
+          <button class="btn-p" style="background:#fff;color:${c}" onclick="openDetail('${code}')">查看完整详情 →</button>
+          <button class="btn-o" onclick="startTest()">再测一次</button>
+        </div>
+      </div>
+    </div>
+    <div class="res-body">
+      <div class="res-card"><div class="res-card-lbl">四维得分</div><div class="dims">${bars}</div></div>
+      <div class="res-card"><div class="res-card-lbl">梗点速览</div><div class="res-meme">${tp.meme}</div><div class="res-quote" style="border-color:${c}">${tp.q}</div></div>
+      <div class="res-card"><div class="res-card-lbl">完整解析</div><div class="res-desc">${tp.desc}</div></div>
+      <div class="res-acts">
+        <button class="btn-ghost" onclick="go('types')">探索所有类型</button>
+        <button class="btn-ghost" onclick="startTest()">再测一次</button>
+      </div>
+    </div>`;
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('.dim-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});
+  },100));
+}
+
+/* ═══════════════ DETAIL PAGE ═══════════════ */
+function openDetail(code){
+  const tp=T[code],grp=G[tp.g],c=grp.color;
+  const descText=tp.desc.replace(new RegExp(`^${code}\\s*型个体`),'这类个体');
+  const hero=document.getElementById('td-hero');
+  hero.style.setProperty('--tone',c);
+  hero.style.setProperty('--tone-dark',grp.dark);
+  hero.style.setProperty('--tone-soft',`${c}18`);
+
+  // Dimension scores
+  const dimsHTML=DL.map((dl,i)=>{
+    // derive scores from answers if coming from test, else show balanced
+    const hasAns=S.ans.every(a=>a!==null);
+    const avg=hasAns?S.ans.slice(i*5,(i+1)*5).reduce((a,b)=>a+b,0)/5:3.2;
+    const pct=Math.round((avg-1)/4*100),isA=avg>3,lp=isA?pct:100-pct;
+    return`<div class="td-dim">
+      <div class="td-dim-head">
+        <span class="td-dim-a" style="color:${c}">${isA?dl.a:dl.b} ${lp}%</span>
+        <span class="td-dim-b">${isA?dl.b:dl.a} ${100-lp}%</span>
+      </div>
+      <div class="td-dim-rail"><div class="td-dim-fill" style="width:0%;background:${c}" data-w="${lp}"></div></div>
+      <div class="td-dim-pct"><span>${isA?dl.a:dl.b}</span><span>${isA?dl.b:dl.a}</span></div>
+    </div>`;
+  }).join('');
+
+  const dimKeys=['J/L','R/F','I/S','A/B'];
+  const dimVals=code.split('');
+  const axisHTML=dimKeys.map((k,i)=>`
+    <div class="td-axis-chip"><b>${dimVals[i]}</b>${k}</div>`).join('');
+
+  // Strengths
+  const strHTML=tp.strengths.map(s=>`
+    <div class="td-item">
+      <div class="td-item-icon" style="background:${c}"></div>
+      <div class="td-item-body"><div class="td-item-ttl">${s.t}</div><div class="td-item-dsc">${s.d}</div></div>
+    </div>`).join('');
+
+  // Weaknesses
+  const weakHTML=tp.weaknesses.map(w=>`
+    <div class="td-item">
+      <div class="td-item-icon" style="background:#cfc9bd"></div>
+      <div class="td-item-body"><div class="td-item-ttl">${w.t}</div><div class="td-item-dsc">${w.d}</div></div>
+    </div>`).join('');
+
+  // Same-group types
+  const sameGroup=Object.entries(T).filter(([k,v])=>v.g===tp.g&&k!==code).slice(0,3);
+  const exploreHTML=sameGroup.map(([k,v])=>`
+    <div class="td-related-type" onclick="openDetail('${k}')">
+      <img src="chars/${k}.png" alt="${v.name}">
+      <span>${k}</span>
+    </div>`).join('');
+
+  hero.innerHTML=`
+    <div class="td-shell">
+      <aside class="td-person-card">
+        <div class="td-portrait-frame">
+          <img src="chars/${code}.png" alt="${tp.name}">
+        </div>
+        <div class="td-card-body">
+          <div class="td-grp-badge"><span class="td-grp-dot"></span>${grp.name}</div>
+          <div>
+            <div class="td-code">${code}</div>
+            <div class="td-name">${tp.name}</div>
+          </div>
+          <div class="td-tag">${tp.tag}</div>
+          <div class="td-axis-chips">${axisHTML}</div>
+          <div class="td-related">
+            <div class="td-related-title">同派参考</div>
+            <div class="td-related-grid">${exploreHTML}</div>
+          </div>
+          <div class="td-card-actions">
+            <button class="td-card-btn" onclick="startTest()">开始测试</button>
+            <button class="td-card-btn secondary" onclick="go('types')">全部类型</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="td-dashboard">
+        <section class="td-panel td-score-panel" id="td-s-dims">
+          <div class="td-panel-ttl">四维得分</div>
+          <div class="td-dims">${dimsHTML}</div>
+        </section>
+        <section class="td-panel td-profile-panel" id="td-s-meme">
+          <div class="td-panel-ttl">人物速览</div>
+          <div class="td-meme-text">${tp.meme}</div>
+          <div class="td-quote" style="border-color:${c}">${tp.q}</div>
+        </section>
+        <section class="td-panel td-strength-panel" id="td-s-str">
+          <div class="td-panel-ttl">核心优势</div>
+          <div class="td-items">${strHTML}</div>
+        </section>
+        <section class="td-panel td-weak-panel" id="td-s-weak">
+          <div class="td-panel-ttl">潜在盲区</div>
+          <div class="td-items">${weakHTML}</div>
+        </section>
+        <section class="td-panel td-analysis-panel" id="td-s-desc">
+          <div class="td-panel-ttl">完整解析</div>
+          <div class="td-desc-text">${descText}</div>
+        </section>
+      </main>
+    </div>`;
+
+  go('detail');
+
+  // Animate dim bars
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('.td-dim-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});
+  },200));
+}
+
+function tdScroll(id,btn){
+  document.querySelectorAll('.td-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ═══════════════ TYPE CARDS ═══════════════ */
+function drawGrid(id,filter){
+  const el=document.getElementById(id); if(!el)return;
+  el.innerHTML=Object.entries(T)
+    .filter(([,t])=>filter==='all'||t.g===filter)
+    .map(([code,t])=>{
+      const c=G[t.g].color;
+      return`<div class="tcard" data-g="${t.g}" onclick="openDetail('${code}')">
+        <div class="tcard-img"><img src="chars/${code}.png" alt="${t.name}"></div>
+        <div class="tcard-code">${code}</div>
+        <div class="tcard-emo">${t.e}</div>
+        <div class="tcard-name">${t.name}</div>
+        <div class="tcard-sub" style="color:${c}99">${G[t.g].name}</div>
+      </div>`;
+    }).join('');
+}
+function typesFilter(g,btn){
+  document.querySelectorAll('#types-tabs .gtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); drawGrid('types-grid',g);
+}
+
+/* ═══════════════ INIT ═══════════════ */
+const initialParams=new URLSearchParams(window.location.search);
+const initialType=initialParams.get('type');
+const initialPage=initialParams.get('page');
+if(initialType&&T[initialType]) openDetail(initialType);
+else if(initialPage==='types') go('types');
+</script>
+</body>
+</html>
