@@ -315,9 +315,9 @@
     .td-card-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(31,42,35,.12); }
 
     .td-dashboard {
-      height:min(780px, calc(100svh - 112px)); min-height:0; display:grid; gap:16px;
+      height:calc(100svh - 112px); min-height:760px; display:grid; gap:18px;
       grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-      grid-template-rows:minmax(150px,.65fr) minmax(260px,1fr) minmax(230px,.9fr);
+      grid-template-rows:minmax(170px,.72fr) minmax(300px,1fr) minmax(270px,.95fr);
       grid-template-areas:
         "score profile"
         "strength weak"
@@ -332,41 +332,41 @@
     .td-panel {
       min-height:0; border-radius:8px; background:rgba(255,255,255,.92);
       border:1px solid rgba(31,42,35,.07); box-shadow:var(--shadow);
-      padding:20px 24px; overflow:visible; align-self:stretch;
+      padding:22px 26px; overflow:visible; align-self:stretch;
       display:flex; flex-direction:column;
     }
     .td-panel.td-analysis-panel { overflow:hidden; }
     .td-panel-ttl {
       display:flex; align-items:center; justify-content:space-between;
-      font-size:.78rem; text-transform:uppercase; letter-spacing:2px;
-      color:var(--muted); font-weight:800; margin-bottom:12px;
+      font-size:.82rem; text-transform:uppercase; letter-spacing:2px;
+      color:var(--muted); font-weight:800; margin-bottom:14px;
     }
     .td-panel-ttl::after { content:''; height:1px; flex:1; margin-left:12px; background:var(--line); }
 
-    .td-dims { flex:1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.9rem 1rem; align-content:center; }
-    .td-dim { display:flex; flex-direction:column; gap:.32rem; }
+    .td-dims { flex:1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.05rem 1.15rem; align-content:center; }
+    .td-dim { display:flex; flex-direction:column; gap:.4rem; }
     .td-dim-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-    .td-dim-a { font-size:.86rem; font-weight:800; white-space:nowrap; }
-    .td-dim-b { font-size:.78rem; color:var(--muted); white-space:nowrap; }
-    .td-dim-rail { height:8px; background:#e8ece6; border-radius:8px; overflow:hidden; }
+    .td-dim-a { font-size:.94rem; font-weight:800; white-space:nowrap; }
+    .td-dim-b { font-size:.84rem; color:var(--muted); white-space:nowrap; }
+    .td-dim-rail { height:9px; background:#e8ece6; border-radius:8px; overflow:hidden; }
     .td-dim-fill { height:100%; border-radius:8px; transition:width 1.1s ease .2s; }
-    .td-dim-pct { display:flex; justify-content:space-between; font-size:.68rem; color:#a6aaa4; }
+    .td-dim-pct { display:flex; justify-content:space-between; font-size:.74rem; color:#a6aaa4; }
 
-    .td-meme-text { font-size:.96rem; line-height:1.86; color:var(--text); }
+    .td-meme-text { font-size:1.05rem; line-height:1.92; color:var(--text); }
     .td-quote {
-      margin-top:.8rem; padding:.72rem .9rem; border-left:3px solid;
+      margin-top:1rem; padding:.82rem 1rem; border-left:4px solid;
       border-radius:0 8px 8px 0; background:#f7f8f5; font-style:italic;
-      font-size:.88rem; color:var(--muted); line-height:1.68;
+      font-size:.94rem; color:var(--muted); line-height:1.72;
     }
-    .td-items { flex:1; display:grid; gap:.82rem; align-content:space-evenly; }
-    .td-item { display:grid; grid-template-columns:10px minmax(0,1fr); gap:.78rem; align-items:stretch; }
+    .td-items { flex:1; display:grid; gap:1rem; align-content:space-evenly; }
+    .td-item { display:grid; grid-template-columns:12px minmax(0,1fr); gap:.9rem; align-items:stretch; }
     .td-item-icon {
-      width:6px; min-height:32px; border-radius:8px; flex-shrink:0;
+      width:7px; min-height:42px; border-radius:8px; flex-shrink:0;
     }
-    .td-item-ttl { font-weight:800; font-size:.92rem; margin-bottom:.12rem; }
-    .td-item-dsc { font-size:.86rem; color:var(--muted); line-height:1.64; }
+    .td-item-ttl { font-weight:800; font-size:1rem; margin-bottom:.18rem; }
+    .td-item-dsc { font-size:.94rem; color:var(--muted); line-height:1.7; }
     .td-desc-text {
-      font-size:.98rem; line-height:1.92; color:var(--text);
+      font-size:1.06rem; line-height:2; color:var(--text);
       max-height:none; overflow:visible; padding-right:8px;
     }
     .td-desc-text::-webkit-scrollbar { width:6px; }
