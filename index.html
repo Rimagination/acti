@@ -277,7 +277,7 @@
       background:linear-gradient(145deg, #fff 0%, var(--tone-soft) 100%);
       border:1px solid rgba(31,42,35,.08);
     }
-    .td-portrait-frame img { width:100%; height:100%; display:block; object-fit:cover; mix-blend-mode:multiply; }
+    .td-portrait-frame img { width:100%; height:100%; display:block; object-fit:contain; object-position:center; mix-blend-mode:multiply; }
     .td-card-body { padding:16px 20px 18px; display:flex; flex-direction:column; gap:10px; min-height:0; text-align:center; }
     .td-grp-badge {
       display:inline-flex; align-items:center; gap:8px; align-self:center;
@@ -300,10 +300,11 @@
     .td-related-type {
       border:1px solid var(--line); border-radius:8px; background:#fbfbf8;
       cursor:pointer; overflow:hidden; transition:transform .2s ease, border-color .2s ease;
+      display:flex; flex-direction:column; align-self:start;
     }
     .td-related-type:hover { transform:translateY(-2px); border-color:var(--tone); }
     .td-related-type img {
-      width:100%; aspect-ratio:1/1; object-fit:contain; display:block;
+      width:100%; height:auto; aspect-ratio:1/1; object-fit:contain; object-position:center; display:block;
       background:#fff; mix-blend-mode:multiply;
     }
     .td-related-type span { display:block; padding:4px 5px 6px; font-size:.62rem; text-align:center; font-weight:700; color:var(--tone-dark); }
@@ -486,6 +487,9 @@
       .td-person-card { display:flex; }
       .td-card-body { padding:18px 20px 20px; }
       .td-code { font-size:3.1rem; }
+      .td-related { margin-top:0; }
+      .td-related-grid { align-items:start; }
+      .td-related-type img { height:auto; }
     }
   </style>
 </head>
