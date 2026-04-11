@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ACTI — 学术人格类型测试</title>
+  <link rel="preload" as="image" href="assets/hero-main.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -517,7 +519,7 @@
       </div>
     </div>
     <div class="hero-visual" aria-hidden="true">
-      <img src="assets/hero-main.png" alt="">
+      <img src="assets/hero-main.webp" width="1920" height="1072" alt="" fetchpriority="high" decoding="async">
     </div>
   </section>
 </div>
@@ -1030,7 +1032,7 @@ function openDetail(code){
   const sameGroup=Object.entries(T).filter(([k,v])=>v.g===tp.g&&k!==code).slice(0,3);
   const exploreHTML=sameGroup.map(([k,v])=>`
     <div class="td-related-type" onclick="openDetail('${k}')">
-      <img src="chars/${k}.png" alt="${v.name}">
+      <img src="chars/${k}.webp" width="768" height="768" alt="${v.name}" loading="lazy" decoding="async">
       <span>${k}</span>
     </div>`).join('');
 
@@ -1038,7 +1040,7 @@ function openDetail(code){
     <div class="td-shell">
       <aside class="td-person-card">
         <div class="td-portrait-frame">
-          <img src="chars/${code}.png" alt="${tp.name}">
+          <img src="chars/${code}.webp" width="768" height="768" alt="${tp.name}" fetchpriority="high" decoding="async">
         </div>
         <div class="td-card-body">
           <div class="td-grp-badge"><span class="td-grp-dot"></span>${grp.name}</div>
@@ -1107,7 +1109,7 @@ function drawGrid(id,filter){
     .map(([code,t])=>{
       const c=G[t.g].color;
       return`<div class="tcard" data-g="${t.g}" onclick="openDetail('${code}')">
-        <div class="tcard-img"><img src="chars/${code}.png" alt="${t.name}"></div>
+        <div class="tcard-img"><img src="chars/${code}.webp" width="768" height="768" alt="${t.name}" loading="lazy" decoding="async"></div>
         <div class="tcard-code">${code}</div>
         <div class="tcard-emo">${t.e}</div>
         <div class="tcard-name">${t.name}</div>
