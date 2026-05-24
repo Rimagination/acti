@@ -35,6 +35,53 @@
     .nav-links { display:flex; gap:2rem; }
     .nav-links a { color:var(--muted); text-decoration:none; font-size:.85rem; letter-spacing:.5px; cursor:pointer; transition:color var(--ease); }
     .nav-links a:hover { color:var(--text); }
+
+    /* ── Brand Cluster ── */
+    .brand-cluster { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+    .brand-cluster .brand {
+      display:inline-flex; align-items:center; gap:8px;
+      text-decoration:none; color:var(--text);
+    }
+    .brand-cluster .brand-logo {
+      width:26px; height:26px; border-radius:6px;
+      box-shadow:0 0 0 1px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.06);
+    }
+    .brand-cluster .brand-name {
+      font-family:var(--serif); font-size:12px; font-weight:700; letter-spacing:.3px;
+    }
+    .brand-cluster .brand-divider {
+      width:1px; height:18px; background:rgba(0,0,0,.12);
+    }
+    .brand-cluster .product-brand {
+      font-family:var(--serif); font-size:15px; font-weight:700; letter-spacing:1px;
+      color:var(--text); text-decoration:none; cursor:pointer;
+    }
+    .brand-cluster .product-brand:hover { opacity:.7; }
+
+    /* ── Global Nav Dropdown ── */
+    .scansci-global-menu { position:relative; }
+    .scansci-global-menu summary {
+      list-style:none; cursor:pointer;
+      color:var(--muted); text-decoration:none; font-size:.85rem;
+      letter-spacing:.5px; transition:color var(--ease);
+    }
+    .scansci-global-menu summary::-webkit-details-marker { display:none; }
+    .scansci-global-menu summary:hover { color:var(--text); }
+    .scansci-global-menu__panel {
+      display:none; position:absolute; top:calc(100% + 8px); right:0;
+      min-width:180px; background:var(--surface);
+      border:1px solid rgba(0,0,0,.08); border-radius:12px;
+      box-shadow:0 12px 40px rgba(0,0,0,.1);
+      padding:6px; z-index:300;
+    }
+    .scansci-global-menu[open] .scansci-global-menu__panel { display:block; }
+    .scansci-global-menu__panel a {
+      display:block; padding:10px 14px; border-radius:8px;
+      color:var(--text); text-decoration:none; font-size:.85rem;
+      transition:background var(--ease);
+    }
+    .scansci-global-menu__panel a:hover { background:rgba(0,0,0,.04); }
+
     @media(max-width:768px){
       nav { padding:0 4%; }
       .nav-logo { font-size:1.35rem; }
@@ -521,12 +568,31 @@
 
 <!-- ── NAV ── -->
 <nav>
-  <div class="nav-logo" onclick="go('home')">ACTI</div>
+  <div class="brand-cluster">
+    <a class="brand" href="https://www.scansci.com/" target="_blank" rel="noreferrer">
+      <img class="brand-logo" src="assets/brand/scansci-app-icon-64.png" alt="" aria-hidden="true">
+      <span class="brand-name">ScanSci 出品</span>
+    </a>
+    <span class="brand-divider" aria-hidden="true"></span>
+    <a class="product-brand" onclick="go('home')">ACTI</a>
+  </div>
   <div class="nav-links">
     <a onclick="startTest()">开始测试</a>
     <a id="nav-result" onclick="openSavedResult()" style="display:none">我的结果</a>
     <a onclick="go('types')">所有类型</a>
-    <a href="https://scansci.com/" target="_blank" rel="noopener noreferrer">ScanSci</a>
+    <details class="scansci-global-menu">
+      <summary>应用导航</summary>
+      <div class="scansci-global-menu__panel">
+        <a href="https://easyslides.scansci.com">EasySlides</a>
+        <a href="https://paperdeck.scansci.com">PaperDeck</a>
+        <a href="https://paperatlas.scansci.com">Paper Atlas</a>
+        <a href="https://dataset.scansci.com">DataRaven</a>
+        <a href="https://journal.scansci.com">Journal Scout</a>
+        <a href="https://citation.scansci.com">Citation Lab</a>
+        <a href="https://skills.scansci.com">SCI Skills</a>
+        <a href="https://acti.scansci.com">ACTI</a>
+      </div>
+    </details>
   </div>
 </nav>
 
