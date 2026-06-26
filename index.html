@@ -197,7 +197,6 @@
     .test-box { max-width:660px; margin:0 auto; padding:44px 5% 52px; }
     .test-meta { display:flex; justify-content:center; align-items:center; margin-bottom:1.65rem; }
     .test-ctr { font-size:.78rem; color:var(--muted); font-weight:500; letter-spacing:.3px; }
-    .test-dim { display:none; }
     .test-q { font-family:var(--serif); font-size:clamp(1.22rem,2.6vw,1.62rem); font-weight:600; line-height:1.55; text-align:center; margin-bottom:2.2rem; }
     .scale { display:flex; flex-direction:column; gap:.52rem; margin-bottom:2.15rem; }
     .sopt {
@@ -538,15 +537,15 @@
       <div class="hero-badge">Academic Character Type Indicator</div>
       <h1>ACTI</h1>
       <p class="hero-line">你不一定是你以为的那种学者</p>
-      <p class="hero-sub">20 道题 · 4 个维度 · 16 种学术人格</p>
+      <p class="hero-sub"><span id="hero-q-count">32</span> 道题 · 4 个维度 · 16 种学术人格</p>
       <div class="hero-actions">
         <button class="btn-p" onclick="startTest()">开始测试 →</button>
       </div>
       <div class="hero-stats">
         <div><div class="stat-n">4</div><div class="stat-l">大维度</div></div>
         <div><div class="stat-n">16</div><div class="stat-l">种人格</div></div>
-        <div><div class="stat-n">20</div><div class="stat-l">道题目</div></div>
-        <div><div class="stat-n">5<small>min</small></div><div class="stat-l">完成时间</div></div>
+        <div><div class="stat-n" id="stat-q-count">32</div><div class="stat-l">道题目</div></div>
+        <div><div class="stat-n">6<small>min</small></div><div class="stat-l">完成时间</div></div>
       </div>
     </div>
     <div class="hero-visual" aria-hidden="true">
@@ -561,8 +560,7 @@
     <div class="prog-rail"><div class="prog-fill" id="prog" style="width:0%"></div></div>
     <div class="test-box">
       <div class="test-meta">
-        <span class="test-ctr" id="t-ctr">第 1 题 / 共 20 题</span>
-        <span class="test-dim" id="t-dim">维度一·努力度</span>
+        <span class="test-ctr" id="t-ctr">第 1 题 / 共 32 题</span>
       </div>
       <h2 class="test-q" id="t-q"></h2>
       <div class="scale" id="t-scale"></div>
@@ -895,25 +893,37 @@ Object.entries(PSYCH_DESC).forEach(([code,desc])=>{ T[code].desc=desc; });
 
 const Qs=[
   {t:'即便没有人要求，我也会主动把事情做到更高的标准。',d:0,lbl:'维度一 · 努力度'},
-  {t:'看到身边的同学比自己进展快，我会感到压力并加快步伐。',d:0,lbl:'维度一 · 努力度'},
-  {t:'我为自己设定的目标，通常远高于外部的实际要求。',d:0,lbl:'维度一 · 努力度'},
-  {t:'即使没有截止日期，我也能保持稳定持续的学习状态。',d:0,lbl:'维度一 · 努力度'},
-  {t:'"差不多就行"这种心态，会让我感到一种隐约的不适。',d:0,lbl:'维度一 · 努力度'},
   {t:'做决策时，我更依赖数据与逻辑分析，而非直觉与感受。',d:1,lbl:'维度二 · 思维型'},
-  {t:'选择研究方向时，发表前景比个人兴趣对我更具决定性。',d:1,lbl:'维度二 · 思维型'},
-  {t:'面对批评，我通常能较快抽离情绪，专注于内容本身。',d:1,lbl:'维度二 · 思维型'},
-  {t:'我认为，在争论中引用证据比诉诸情感更有说服力。',d:1,lbl:'维度二 · 思维型'},
-  {t:'我相信，过于感性会在专业场合中产生干扰。',d:1,lbl:'维度二 · 思维型'},
-  {t:'独自工作时，我的状态和效率通常比在团队中更好。',d:2,lbl:'维度三 · 社交型'},
-  {t:'即便是愉快的社交活动，长时间后也会让我感到精力消耗。',d:2,lbl:'维度三 · 社交型'},
-  {t:'我更倾向于独立完成任务，而不是依赖团队协作分工。',d:2,lbl:'维度三 · 社交型'},
-  {t:'我认为学术上的深度个人钻研，比广泛的人脉网络更有长远价值。',d:2,lbl:'维度三 · 社交型'},
-  {t:'我不需要太多同伴互动，也能维持良好的工作状态。',d:2,lbl:'维度三 · 社交型'},
+  {t:'独自工作时，我的状态和效率通常比在团队中更好。',d:2,lbl:'维度三 · 独群型'},
   {t:'知道有任务尚未完成时，我会持续感到一种隐性焦虑。',d:3,lbl:'维度四 · 时间型'},
+  {t:'看到身边的同学比自己进展快，我会感到压力并加快步伐。',d:0,lbl:'维度一 · 努力度'},
+  {t:'选择研究方向时，发表前景比个人兴趣对我更具决定性。',d:1,lbl:'维度二 · 思维型'},
+  {t:'即便是愉快的社交活动，长时间后也会让我感到精力消耗。',d:2,lbl:'维度三 · 独群型'},
   {t:'我通常会提前于截止日期完成工作，给自己留出检查时间。',d:3,lbl:'维度四 · 时间型'},
+  {t:'我为自己设定的目标，通常远高于外部的实际要求。',d:0,lbl:'维度一 · 努力度'},
+  {t:'面对批评，我通常能较快抽离情绪，专注于内容本身。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我更倾向于独立完成任务，而不是依赖团队协作分工。',d:2,lbl:'维度三 · 独群型'},
   {t:'没有明确计划的日子，会让我感到一种难以言说的不安。',d:3,lbl:'维度四 · 时间型'},
+  {t:'即使没有截止日期，我也能保持稳定持续的学习状态。',d:0,lbl:'维度一 · 努力度'},
+  {t:'我认为，在争论中引用证据比诉诸情感更有说服力。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我认为学术上的深度个人钻研，比广泛的人脉网络更有长远价值。',d:2,lbl:'维度三 · 独群型'},
   {t:'我倾向于立即开始处理任务，而不是等待更合适的时机。',d:3,lbl:'维度四 · 时间型'},
+  {t:'"差不多就行"这种心态，会让我感到一种隐约的不适。',d:0,lbl:'维度一 · 努力度'},
+  {t:'我相信，过于感性会在专业场合中产生干扰。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我不需要太多同伴互动，也能维持良好的工作状态。',d:2,lbl:'维度三 · 独群型'},
   {t:'我的待办事项清单，通常是实时更新、条目清晰的。',d:3,lbl:'维度四 · 时间型'},
+  {t:'如果一个任务只是达标，我通常还会想办法把它做得更完整。',d:0,lbl:'维度一 · 努力度'},
+  {t:'我在评价一个想法时，会先看它能否被数据、文献或逻辑链条支撑。',d:1,lbl:'维度二 · 思维型'},
+  {t:'频繁同步进度会打断我的思考节奏。',d:2,lbl:'维度三 · 独群型'},
+  {t:'任务一出现，我通常会先估算时间表和风险缓冲。',d:3,lbl:'维度四 · 时间型'},
+  {t:'连续几天没有推进研究进度时，我会明显坐立不安。',d:0,lbl:'维度一 · 努力度'},
+  {t:'即使某个选题很打动我，只要成功概率太低，我也会倾向于放弃。',d:1,lbl:'维度二 · 思维型'},
+  {t:'如果可以选择，我更愿意用文字异步沟通，而不是临时开会讨论。',d:2,lbl:'维度三 · 独群型'},
+  {t:'如果别人迟迟不确定截止安排，我会主动要求明确时间节点。',d:3,lbl:'维度四 · 时间型'},
+  {t:'为了把成果做得更好，我愿意牺牲一部分休息或娱乐时间。',d:0,lbl:'维度一 · 努力度'},
+  {t:'当个人偏好与可验证证据冲突时，我更愿意调整自己的判断。',d:1,lbl:'维度二 · 思维型'},
+  {t:'我更信任自己长时间独立打磨出的判断，而不是群体即时讨论的结论。',d:2,lbl:'维度三 · 独群型'},
+  {t:'我很难把重要任务完全留到最后几天再处理。',d:3,lbl:'维度四 · 时间型'},
 ];
 
 const OPTS=[
@@ -921,10 +931,18 @@ const OPTS=[
 ];
 
 const DL=[{a:'卷 J',b:'躺 L'},{a:'理 R',b:'感 F'},{a:'独 I',b:'群 S'},{a:'急 A',b:'缓 B'}];
-const RESULT_KEY='acti:lastResult';
+const RESULT_KEY='acti:lastResult:v2';
 
 /* ═══════════════ STATE ═══════════════ */
-let S={page:'home',q:0,ans:Array(20).fill(null)};
+let S={page:'home',q:0,ans:Array(Qs.length).fill(null)};
+
+function syncQuestionCountLabels(){
+  const text=String(Qs.length);
+  ['hero-q-count','stat-q-count'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=text;
+  });
+}
 
 /* ═══════════════ NAV ═══════════════ */
 function readSavedResult(){
@@ -932,7 +950,8 @@ function readSavedResult(){
     const raw=localStorage.getItem(RESULT_KEY);
     if(!raw) return null;
     const saved=JSON.parse(raw);
-    if(!saved||!T[saved.code]||!Array.isArray(saved.scores)||saved.scores.length!==4) return null;
+    if(!saved||!T[saved.code]||!Array.isArray(saved.scores)||saved.scores.length!==DL.length) return null;
+    if(!Array.isArray(saved.answers)||saved.answers.length!==Qs.length) return null;
     return saved;
   }catch{
     return null;
@@ -971,7 +990,7 @@ function go(page){
 }
 
 function startTest(){
-  S.q=0; S.ans=Array(20).fill(null);
+  S.q=0; S.ans=Array(Qs.length).fill(null);
   go('test'); renderQ();
 }
 
@@ -979,7 +998,6 @@ function startTest(){
 function renderQ(){
   const n=S.q,q=Qs[n],tot=Qs.length;
   document.getElementById('t-ctr').textContent=`第 ${n+1} 题 / 共 ${tot} 题`;
-  document.getElementById('t-dim').textContent=q.lbl;
   document.getElementById('t-q').textContent=q.t;
   document.getElementById('prog').style.width=(n/tot*100)+'%';
   document.getElementById('t-scale').innerHTML=OPTS.map(o=>`
@@ -1003,8 +1021,14 @@ function prevQ(){ if(S.q>0){S.q--;renderQ();} }
 /* ═══════════════ SCORING ═══════════════ */
 function calcType(){
   const keys=['JL','RF','IS','AB']; let code='',scores=[];
+  const buckets=DL.map(()=>[]);
+  S.ans.forEach((v,i)=>{
+    const q=Qs[i];
+    if(q&&buckets[q.d]) buckets[q.d].push(Number(v||0));
+  });
   for(let d=0;d<4;d++){
-    const avg=S.ans.slice(d*5,(d+1)*5).reduce((a,b)=>a+b,0)/5;
+    const items=buckets[d];
+    const avg=items.reduce((a,b)=>a+b,0)/Math.max(1,items.length);
     scores.push(avg); code+=avg>3?keys[d][0]:keys[d][1];
   }
   return{code,scores};
@@ -1162,6 +1186,7 @@ function typesFilter(g,btn){
 const initialParams=new URLSearchParams(window.location.search);
 const initialType=initialParams.get('type');
 const initialPage=initialParams.get('page');
+syncQuestionCountLabels();
 updateResultNav();
 if(initialType&&T[initialType]) openDetail(initialType);
 else if(initialPage==='types') go('types');
